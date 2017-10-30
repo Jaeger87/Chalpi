@@ -46,6 +46,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# Untracked files:
 files/token.txt
 files/organizer.txt
 files/AuthorizedUsers.txt
