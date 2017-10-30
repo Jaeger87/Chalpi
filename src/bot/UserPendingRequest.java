@@ -1,0 +1,6 @@
+package bot;
+
+public enum UserPendingRequest {
+
+	NONE,ITEMCREATION,LISTCREATION,EDITITEM,RENAMELIST, ADDCOLOR;
+}

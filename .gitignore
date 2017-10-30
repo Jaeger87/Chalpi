@@ -45,3 +45,8 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+files/token.txt
+files/organizer.txt
+files/AuthorizedUsers.txt
+python/botSettings.txt
