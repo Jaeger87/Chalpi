@@ -146,12 +146,12 @@ public class SmartChBot extends Bot{
 			
 		case PRINTPHOTO:
 			filename = Constants.IMAGESFOLDER + values[1] + ".png";
-			Printer.printPhoto(downloadFileFromTelegramServer(c.getMessage().getPhoto().get(0), filename));
+			Printer.printPhoto(downloadFileFromTelegramServer(values[1], filename));
 			break;
 			
 		case PRINTPANORAMIC:
 			filename = Constants.IMAGESFOLDER + values[1] + ".png";
-			Printer.printPhoto(downloadFileFromTelegramServer(c.getMessage().getPhoto().get(0), filename));
+			Printer.printPhoto(downloadFileFromTelegramServer(values[1], filename));
 			break;
 			
 		case CREATEITEM:
@@ -347,7 +347,13 @@ public class SmartChBot extends Bot{
 		ikbl = new ArrayList<>();
 		
 		InlineKeyboardButton inkB = new InlineKeyboardButton(Constants.PRINTPHOTO);
-		inkB.setCallback_data(CallBackCodes.PRINTPHOTO + Constants.CALLBACKSEPARATOR + m.getPhoto().get(0).getFileID());
+		
+		String photoID = m.getPhoto()
+		.stream()
+		.reduce(m.getPhoto().get(0), (p1,p2) -> {if(p1.getfileSize() > p2.getfileSize()) return p1; else return p2;})
+		.getFileID();
+		
+		inkB.setCallback_data(CallBackCodes.PRINTPHOTO + Constants.CALLBACKSEPARATOR + photoID);
 		
 		ikbl.add(inkB);
 		inlKeyboard.add(ikbl);

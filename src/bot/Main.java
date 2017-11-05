@@ -14,6 +14,7 @@ public class Main {
 	public static void main(String[] args) throws FileNotFoundException, IllegalArgumentException, UnknownHostException, SocketException 
 	{
 		filePath = new File("").getAbsolutePath() + System.getProperty("file.separator");
+		Printer.setFilePath(filePath);
 		File token = new File(filePath + Constants.FILETOKEN);
 		String tkn = "";
 		try (Scanner s = new Scanner(token))
