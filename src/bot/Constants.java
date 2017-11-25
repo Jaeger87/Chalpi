@@ -49,7 +49,7 @@ public class Constants {
 	public static final String LIGHTSON = "Luci attivate!";
 	public static final String LIGHTSOFF ="Luci disattivate ";
 	public static final String RAINBOWMODE ="Modalità arcobaleno 🌈";
-	public static final String REMOVECOLOR ="Rimuovi colore";
+	public static final String REMOVECOLOR ="Rimuovi colore ☠️";
 	public static final String MENUCOLOR ="Cambia il colore delle luci, creane uno nuovo o scegli la modalità arcobaleno!";
 	public static final String BACK = "Indietro 🔙";
 	public static final String OPS = "Ops... Qualcosa è andato storto!";

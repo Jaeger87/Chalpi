@@ -244,7 +244,10 @@ public class SmartChBot extends Bot{
 			break;
 		
 		case REMOVECOLOR:
-			
+			ustatus.setUp(UserPendingRequest.REMOVECOLOR);
+			mts = new MessageToSend(c.getMessage().getChat().getId(), Constants.SENDMECOLORTOREMOVE);
+			mts.setReplyMarkup(new ForceReply(true));
+			sendMessage(mts);
 			break;
 		default:
 			break;
@@ -473,6 +476,18 @@ public class SmartChBot extends Bot{
 				mts.setParseMode(ParseMode.MARKDOWN);	
 				mts.setReplyMarkup(colorsKeyboardFactory());
 				sendMessage(mts);
+				return;
+			}
+			
+			if(m.getReplyToMessage().getText().equals(Constants.SENDMECOLORTOREMOVE))
+			{
+				if(!pendingRegister.get(m.getFrom().getId()).getUp().equals(UserPendingRequest.REMOVECOLOR))
+					return;
+				
+				if(!oBox.removeColor(m.getText()))
+					opsMenuTrick(m.getChat().getId());
+				else
+					stickerMenuTrick(m.getChat().getId());
 				return;
 			}
 			
@@ -798,7 +813,7 @@ public class SmartChBot extends Bot{
 		MessageToSend mts = new MessageToSend(id, Constants.OPS);
 		mts.setReplyMarkup(menuContainer.getMainMenu());
 		sendMessage(mts);
-		delay();
+		//delay();
 	}
 	
 	
