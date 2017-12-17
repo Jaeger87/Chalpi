@@ -1,3 +1,3 @@
 #!/bin/bash -x
-text=$1
-echo -e $text > /dev/serial0
+echo -e $1
+echo -e "$1" > /dev/serial0
