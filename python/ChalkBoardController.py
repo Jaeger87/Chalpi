@@ -5,12 +5,6 @@ import os.path
 import json
 
 
-class Settings(object):
-    def __init__(self, currentColor,lightsOff,rainbow):
-        self.currentColor = currentColor
-        self.lightsOn = lightsOn
-        self.rainbow = rainbow
-
 # LED strip configuration:
 LED_COUNT      = 60      # Number of LED pixels.
 LED_PIN        = 18      # GPIO pin connected to the pixels (18 uses PWM!).
@@ -24,7 +18,9 @@ LED_STRIP      = ws.WS2811_STRIP_GRB   # Strip type and colour ordering
 
 strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL, LED_STRIP)
 fname = 'botSettings.txt'
-settings = Settings(Color(255, 0, 0), False,False)
+settings = {'lightsOff':False,'rainbow':False,'currentColor':{'red':255,'green':255,'blue':255}}
+current_color = Color(255,255,255)
+
 
 def stripOn(strip, color):
 	for i in range(strip.numPixels()):
@@ -94,35 +90,38 @@ def theaterChaseRainbow(strip, wait_ms=50):
 				strip.setPixelColor(i+q, 0)
 
 
-def setup():
+def setup(strip):
 	GPIO.setmode(GPIO.BCM)
-	GPIO.setup(18, GPIO.IN)
+	GPIO.setup(23, GPIO.IN)
+	strip.begin()
 
-def loop():
+def loop(settings, current_color, strip, fname):
 	switch_status = False
 	commands_from_bot = False
+	input_state = True
 	while True:
 		if os.path.isfile(fname):
 			with open(fname,'U') as f:
 				commands_from_bot = True
+				settings = json.load(f)
 			os.remove(fname)
-
-		if settings.lightsOff:
-		    input_state = GPIO.input(18)
-		    if input_state != switch_status or commands_from_bot:
-			    switch_status = input_state
-			    if switch_status:
-				    stripOn(strip, current_color)
-			    else:
-				    stripOff(strip)
-		time.sleep(0.4)
+		input_state = not(GPIO.input(23))
+		if commands_from_bot:
+			cc =  settings['currentColor']
+			current_color = Color(int(cc['red']),int(cc['green']),int(cc['blue']))
+		if not(settings['lightsOff']) and input_state:
+			print 'asgdfdgj'
+			stripOn(strip, current_color)
+		else:
+			stripOff(strip)
+		time.sleep(0.5)
 
 
 
 
     
-setup()
+setup(strip)
 
-loop()    
+loop(settings, current_color, strip, fname)    
         
         
