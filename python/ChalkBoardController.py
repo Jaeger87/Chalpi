@@ -93,12 +93,15 @@ def theaterChaseRainbow(strip, wait_ms=50):
 def setup(strip):
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(23, GPIO.IN)
+	GPIO.setup(16, GPIO.IN)
 	strip.begin()
 
 def loop(settings, current_color, strip, fname):
 	switch_status = False
 	commands_from_bot = False
 	input_state = True
+	change_light = False
+	prev_on = False
 	while True:
 		if os.path.isfile(fname):
 			with open(fname,'U') as f:
@@ -106,20 +109,27 @@ def loop(settings, current_color, strip, fname):
 				settings = json.load(f)
 			os.remove(fname)
 		input_state = not(GPIO.input(23))
+		second_button_state = GPIO.input(16)
+		if second_button_state:
+			current_color = Color(255,255,255)
+			change_light = True
 		if commands_from_bot:
 			cc =  settings['currentColor']
 			current_color = Color(int(cc['red']),int(cc['green']),int(cc['blue']))
-		if not(settings['lightsOff']) and input_state:
-			print 'asgdfdgj'
-			stripOn(strip, current_color)
+			commands_from_bot = False
+			change_light = True
+		now_on = not(settings['lightsOff']) and input_state
+		if now_on:
+			if change_light or now_on != prev_on:
+			    stripOn(strip, current_color)
 		else:
-			stripOff(strip)
+			if now_on != prev_on:
+			    stripOff(strip)
+		change_light = False
+		prev_on = now_on
 		time.sleep(0.5)
 
-
-
-
-    
+ 
 setup(strip)
 
 loop(settings, current_color, strip, fname)    
