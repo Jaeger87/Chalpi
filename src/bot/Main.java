@@ -24,8 +24,12 @@ public class Main {
 				tkn = s.nextLine();
 			}
 		}
-		MessageReceiver mr = new MessageReceiver(new SmartChBot(tkn), 850, 1);
+		
+		SmartChBot scb = new SmartChBot(tkn);
+		MessageReceiver mr = new MessageReceiver(scb, 850, 1);
+		scb.setMessageReceiver(mr);
 		mr.ignoreEditedMessages();
 		mr.start();
+		
 	}
 }

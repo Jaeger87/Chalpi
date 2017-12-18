@@ -33,6 +33,7 @@ import com.botticelli.bot.request.methods.types.Message;
 import com.botticelli.bot.request.methods.types.ParseMode;
 import com.botticelli.bot.request.methods.types.PreCheckoutQuery;
 import com.botticelli.bot.request.methods.types.ShippingQuery;
+import com.botticelli.messagereceiver.MessageReceiver;
 
 import bot.organizerbox.Item;
 import bot.organizerbox.ItemList;
@@ -49,10 +50,10 @@ public class SmartChBot extends Bot{
 	private MenuContainer menuContainer;
 	public static final int TIMETOSLEEP = 750;
 	private String ipAddress = "";
+	private MessageReceiver myOwnmr;
 	
 	public SmartChBot(String token) throws FileNotFoundException, UnknownHostException, SocketException {
 		super(token);
-		
 		Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
         for (NetworkInterface netint : Collections.list(nets))
         	ipAddress += IpUtility.displayInterfaceInformation(netint);
@@ -84,6 +85,12 @@ public class SmartChBot extends Bot{
 		}
 	}
 
+	
+	public void setMessageReceiver(MessageReceiver myOwnmr)
+	{
+		this.myOwnmr = myOwnmr;
+	}
+	
 	@Override
 	public void audioMessage(Message m) {
 		if(isNotAuthorized(m.getFrom().getId()))
@@ -403,6 +410,28 @@ public class SmartChBot extends Bot{
 		if(isNotAuthorized(m.getFrom().getId()))
 			return;
 
+		if(m.getText().equals(Constants.SHUTDOWN))
+		{
+			oBox.setLightsOff();
+			myOwnmr.stopExecution();
+			ProcessBuilder pb = new ProcessBuilder("sudo", "shutdown", "-h", "now");
+			try 
+			{
+				Process p = pb.start();
+				p.waitFor();
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			} 
+			catch (InterruptedException e) 
+			{
+				e.printStackTrace();
+			}
+			return;
+		}
+		
+		
 		if(m.getText().equals(Constants.SLASHSTART))
 		{
 			MessageToSend mts = new MessageToSend(m.getChat().getId(), Constants.WELCOMEMESSAGE);
