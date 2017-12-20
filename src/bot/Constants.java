@@ -56,4 +56,5 @@ public class Constants {
 	public static final String SENDMECOLORTOREMOVE = "Scrivi il nome del colore che vuoi cancellare";
 	public static final String SENDMENEWCOLOR = "Inviami il nuovo colore nel formato:\n nome R G B \n Dove per R G e B si intendono i valori di rosso verde e blue che vanno da 0 a 255 per esempio \n Rosso 255 0 0";
 	public static final String SHUTDOWN = "/spegni";
+	public static final String BACKUP = "/backup";
 }

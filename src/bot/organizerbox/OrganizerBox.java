@@ -1,6 +1,5 @@
 package bot.organizerbox;
 
-import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -8,13 +7,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.lang.reflect.MalformedParametersException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
-
 import com.botticelli.bot.request.methods.types.GsonOwner;
 import com.google.gson.Gson;
 
@@ -178,7 +174,7 @@ public class OrganizerBox {
 		
 		
 		
-		LedColor c = colors.put(name, new LedColor(red,green,blue));
+		colors.put(name, new LedColor(red,green,blue));
 		saveMe();
 		return true;
 	}

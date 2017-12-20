@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 
 import com.botticelli.bot.Bot;
+import com.botticelli.bot.request.methods.DocumentFileToSend;
 import com.botticelli.bot.request.methods.EditMessageTextRequest;
 import com.botticelli.bot.request.methods.MessageToSend;
 import com.botticelli.bot.request.methods.StickerReferenceToSend;
@@ -48,7 +49,7 @@ public class SmartChBot extends Bot{
 	private HashMap<Long, UserStatus> pendingRegister;
 	private StickersContainer sc;
 	private MenuContainer menuContainer;
-	public static final int TIMETOSLEEP = 750;
+	public static final int TIMETOSLEEP = 855;
 	private String ipAddress = "";
 	private MessageReceiver myOwnmr;
 	
@@ -410,9 +411,13 @@ public class SmartChBot extends Bot{
 		if(isNotAuthorized(m.getFrom().getId()))
 			return;
 
+		System.out.println(m.getText());
+		
 		if(m.getText().equals(Constants.SHUTDOWN))
 		{
 			oBox.setLightsOff();
+			//
+			delay();
 			myOwnmr.stopExecution();
 			ProcessBuilder pb = new ProcessBuilder("sudo", "shutdown", "-h", "now");
 			try 
@@ -428,6 +433,12 @@ public class SmartChBot extends Bot{
 			{
 				e.printStackTrace();
 			}
+			return;
+		}
+		
+		if(m.getText().equals(Constants.BACKUP))
+		{
+			sendDocumentFile(new DocumentFileToSend(m.getFrom().getId(), new File(Constants.SAVEORGANIZERFILE)));
 			return;
 		}
 		
