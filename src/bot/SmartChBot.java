@@ -40,7 +40,6 @@ import bot.organizerbox.Item;
 import bot.organizerbox.ItemList;
 import bot.organizerbox.OrganizerBox;
 
-
 public class SmartChBot extends Bot{
 
 	private HashSet<Long> authorizedUsers;
@@ -874,5 +873,11 @@ public class SmartChBot extends Bot{
 		StickerReferenceToSend srs = new StickerReferenceToSend(id, sc.getRandomRainbowStickers());
 		sendStickerbyReference(srs);
 		delay();
+	}
+
+
+	@Override
+	public void routine() {
+		
 	}
 }
