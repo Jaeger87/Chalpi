@@ -89,6 +89,11 @@ def theaterChaseRainbow(strip, wait_ms=50):
 			for i in range(0, strip.numPixels(), 3):
 				strip.setPixelColor(i+q, 0)
 
+def updateRainbowMode(strip, step):
+	for i in range(strip.numPixels()):
+		strip.setPixelColor(i, wheel((int(i * 256 / strip.numPixels()) + step) & 255))
+	strip.show()
+
 
 def setup(strip):
 	GPIO.setmode(GPIO.BCM)
@@ -102,6 +107,8 @@ def loop(settings, current_color, strip, fname):
 	input_state = True
 	change_light = False
 	prev_on = False
+	stepRainbow = 0
+	rainbowMode = False
 	while True:
 		if os.path.isfile(fname):
 			with open(fname,'U') as f:
@@ -115,19 +122,24 @@ def loop(settings, current_color, strip, fname):
 			change_light = True
 		if commands_from_bot:
 			cc =  settings['currentColor']
+			rainbowMode = settings['rainbow']
 			current_color = Color(int(cc['red']),int(cc['green']),int(cc['blue']))
 			commands_from_bot = False
 			change_light = True
 		now_on = not(settings['lightsOff']) and input_state
 		if now_on:
-			if change_light or now_on != prev_on:
+			if rainbowMode:
+				stepRainbow += 1
+				stepRainbow %= 256
+				updateRainbowMode(strip, stepRainbow)
+			elif change_light or now_on != prev_on:
 			    stripOn(strip, current_color)
 		else:
 			if now_on != prev_on:
 			    stripOff(strip)
 		change_light = False
 		prev_on = now_on
-		time.sleep(0.5)
+		time.sleep(0.3)
 
  
 setup(strip)
