@@ -17,6 +17,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import com.botticelli.bot.Bot;
 import com.botticelli.bot.request.methods.DocumentFileToSend;
@@ -878,6 +881,12 @@ public class SmartChBot extends Bot{
 
 	@Override
 	public void routine() {
-		
+	
+		/*
+		DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
+		DateTime dt = formatter.parseDateTime("11/01/1987 11:00:12");
+		System.out.println(dt.getYear());
+		System.out.println(dt.getDayOfMonth());
+		*/
 	}
 }
