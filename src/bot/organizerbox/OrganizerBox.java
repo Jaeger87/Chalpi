@@ -22,6 +22,7 @@ public class OrganizerBox {
 	private int itemListLastID;
 	private Settings settings;
 	private LinkedHashMap<String,LedColor> colors;
+	private Agenda agenda;
 	
 	public OrganizerBox()
 	{
@@ -29,6 +30,7 @@ public class OrganizerBox {
 		colors = new LinkedHashMap<>();
 		settings = new Settings();
 		itemListLastID = 0;
+		agenda = new Agenda();
 	}
 	
 	public boolean addItemList(String name)
@@ -193,5 +195,8 @@ public class OrganizerBox {
 	    return true;
 		
 	}
+	
+	
+	
 	
 }
