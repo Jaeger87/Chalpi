@@ -19,7 +19,7 @@ public class Agenda {
 		lastId = 0;
 	}
 	
-	public boolean addTask(String task, DateTime schedule)
+	protected boolean addTask(String task, DateTime schedule)
 	{
 		if(!schedule.isAfterNow())
 			return false;
@@ -31,16 +31,21 @@ public class Agenda {
 		return true;
 	}
 	
-	public List<DailyTask> checkAgenda()
+	protected List<DailyTask> checkAgendaToday()
 	{
-		LocalDateTime today = new LocalDateTime();
-		if(!agendaDict.containsKey(today.toLocalDate()))
+		return checkAgenda(new LocalDateTime());
+	}
+	
+	
+	protected List<DailyTask> checkAgenda(LocalDateTime day)
+	{
+		if(!agendaDict.containsKey(day.toLocalDate()))
 		    return null;
-		List<DailyTask> nowTasks = agendaDict.get(today.toLocalDate())
+		List<DailyTask> nowTasks = agendaDict.get(day.toLocalDate())
 				.values()
 				.stream()
 				.filter(dt -> dt.isEnable())
-				.filter(dt -> dt.check(today.toDateTime()))
+				.filter(dt -> dt.check(day.toDateTime()))
 				.sorted()
 				.collect(Collectors.toList());;
 		if(nowTasks.isEmpty())
@@ -49,7 +54,7 @@ public class Agenda {
 	}
 	
 	
-	public void disableTask(LocalDate ld, int id)
+	protected void disableTask(LocalDate ld, int id)
 	{
 		DailyTask dt = findTask(ld, id);
 		if(dt == null)
@@ -57,7 +62,7 @@ public class Agenda {
 		dt.disable();
 	}
 	
-	public void enableTask(LocalDate ld, int id)
+	protected void enableTask(LocalDate ld, int id)
 	{
 		DailyTask dt = findTask(ld, id);
 		if(dt == null)

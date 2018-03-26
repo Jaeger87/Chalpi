@@ -314,39 +314,44 @@ public class SmartChBot extends Bot{
 
 	@Override
 	public void invoiceMessage(Message m) {
-		
+		if(isNotAuthorized(m.getFrom().getId()))
+			return;
 	}
 
 	@Override
 	public void leftChatMemberMessage(Message m) {
-		
+		if(isNotAuthorized(m.getFrom().getId()))
+			return;
 	}
 
 	@Override
 	public void locationMessage(Message m) {
-		
-		
+		if(isNotAuthorized(m.getFrom().getId()))
+			return;		
 	}
 
 	@Override
 	public void newChatMemberMessage(Message m) {
-
-		
+		if(isNotAuthorized(m.getFrom().getId()))
+			return;
 	}
 
 	@Override
 	public void newChatMembersMessage(Message m) {
-		
+		if(isNotAuthorized(m.getFrom().getId()))
+			return;
 	}
 
 	@Override
 	public void newChatPhotoMessage(Message m) {
-		
+		if(isNotAuthorized(m.getFrom().getId()))
+			return;
 	}
 
 	@Override
 	public void newChatTitleMessage(Message m) {
-		
+		if(isNotAuthorized(m.getFrom().getId()))
+			return;
 	}
 
 	@Override
@@ -378,8 +383,8 @@ public class SmartChBot extends Bot{
 
 	@Override
 	public void pinnedMessage(Message m) {
-	
-		
+		if(isNotAuthorized(m.getFrom().getId()))
+			return;
 	}
 
 	@Override

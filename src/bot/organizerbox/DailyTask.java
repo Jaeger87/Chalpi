@@ -8,6 +8,8 @@ public class DailyTask implements Comparable<DailyTask>{
 	private DateTime schedule;
 	private int id;
 	private boolean enable;
+	private static final char TIMESEPARATOR = ':';
+	
 	
 	public DailyTask(String task, DateTime schedule, int id) 
 	{
@@ -73,4 +75,14 @@ public class DailyTask implements Comparable<DailyTask>{
 		
 		return false;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return task + " / " + schedule.getHourOfDay() 
+		+ TIMESEPARATOR + schedule.getMinuteOfHour() 
+		+ TIMESEPARATOR +schedule.getSecondOfMinute();
+	}
+	
+	
 }

@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.joda.time.LocalDate;
+
 import com.botticelli.bot.request.methods.types.GsonOwner;
 import com.google.gson.Gson;
 
@@ -197,6 +200,29 @@ public class OrganizerBox {
 	}
 	
 	
+	public void disableAgendaTask(LocalDate ld, int id)
+	{
+		agenda.disableTask(ld, id);
+	}
 	
+	public void enableAgendaTask(LocalDate ld, int id)
+	{
+		agenda.enableTask(ld, id);
+	}
+	
+	
+	private String dailyAgendaString(List<DailyTask> dayAgenda)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		for(DailyTask dt : dayAgenda)
+		{
+			sb.append(dt.toString());
+			sb.append('\n');
+		}
+		
+		return sb.substring(0, sb.length() - 1);
+		
+	}
 	
 }
