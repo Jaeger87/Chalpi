@@ -1,6 +1,6 @@
 package bot.organizerbox;
 
-public class Item {
+public class Item implements ListableOboxItems{
 
 	private String text;
 	private int id;

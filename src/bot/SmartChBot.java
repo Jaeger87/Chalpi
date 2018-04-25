@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -40,8 +41,10 @@ import com.botticelli.bot.request.methods.types.PreCheckoutQuery;
 import com.botticelli.bot.request.methods.types.ShippingQuery;
 import com.botticelli.messagereceiver.MessageReceiver;
 
+import bot.organizerbox.DailyTask;
 import bot.organizerbox.Item;
 import bot.organizerbox.ItemList;
+import bot.organizerbox.ListableOboxItems;
 import bot.organizerbox.OrganizerBox;
 
 public class SmartChBot extends Bot{
@@ -259,6 +262,12 @@ public class SmartChBot extends Bot{
 			mts = new MessageToSend(c.getMessage().getChat().getId(), Constants.SENDMECOLORTOREMOVE);
 			mts.setReplyMarkup(new ForceReply(true));
 			sendMessage(mts);
+			break;
+			
+		case NEXTDAY:
+			break;
+			
+		case PREVIOUSDAY:
 			break;
 		default:
 			break;
@@ -648,18 +657,60 @@ public class SmartChBot extends Bot{
 	
 	private InlineKeyboardMarkup listKeyboardFactory(List<ItemList> all)
 	{
+		List<ListableOboxItems> listToInput = new ArrayList<>();
+		
+		for(ItemList il: all)
+			listToInput.add(il);
+		return inlineListOfListable(listToInput, CallBackCodes.CALLBACKLIST, CallBackCodes.CREATELIST, Constants.CREATELIST);
+	
+	}
+	
+	
+	
+	private InlineKeyboardMarkup dailyAgendaKeyboardFactory(List<DailyTask> dtDayly, LocalDateTime day)
+	{
+		List<ListableOboxItems> listToInput = new ArrayList<>();
+		
+		for(DailyTask dt: dtDayly)
+			listToInput.add(dt);
+		InlineKeyboardMarkup result = inlineListOfListable(listToInput, CallBackCodes.DAILYTASK, 
+				CallBackCodes.ADDDAILYTASK, Constants.ADDDAILYTASK);
+		
+		ArrayList<InlineKeyboardButton> lastLine = new ArrayList<>();
+		InlineKeyboardButton button = new InlineKeyboardButton(Constants.PREVIOUSDAY);
+		button.setCallback_data(CallBackCodes.PREVIOUSDAY + Constants.CALLBACKSEPARATOR + day.minusDays(1).toString());
+		lastLine.add(button);
+		
+		button = new InlineKeyboardButton(Constants.GOTODAY);
+		button.setCallback_data(CallBackCodes.GOTODAY + Constants.CALLBACKSEPARATOR);
+		lastLine.add(button);
+		
+		button = new InlineKeyboardButton(Constants.NEXTDAY);
+		button.setCallback_data(CallBackCodes.NEXTDAY + Constants.CALLBACKSEPARATOR + day.plusDays(1).toString());
+		lastLine.add(button);
+		
+		result.AddLine(lastLine);
+		
+		return result;
+	}
+	
+	
+	
+	private InlineKeyboardMarkup inlineListOfListable(List<ListableOboxItems> loi, CallBackCodes itemCBC,
+			CallBackCodes addCBC, String addString)
+	{
 		List<List<InlineKeyboardButton>> inlKeyboard = new ArrayList<List<InlineKeyboardButton>>();
-		for(int i = 0; i < all.size(); i++)
+		for(int i = 0; i < loi.size(); i++)
 		{
 			List<InlineKeyboardButton> ikbl = new ArrayList<>();
 			InlineKeyboardButton inkB = new InlineKeyboardButton(" " + (i+1));
-			inkB.setCallback_data(CallBackCodes.CALLBACKLIST + Constants.CALLBACKSEPARATOR + all.get(i).getId());
+			inkB.setCallback_data(itemCBC + Constants.CALLBACKSEPARATOR + loi.get(i).getId());
 			ikbl.add(inkB);
 			inlKeyboard.add(ikbl);
 		}
 		List<InlineKeyboardButton> ikbl = new ArrayList<>();
-		InlineKeyboardButton inkB = new InlineKeyboardButton(Constants.CREATELIST);
-		inkB.setCallback_data(CallBackCodes.CREATELIST + Constants.CALLBACKSEPARATOR);
+		InlineKeyboardButton inkB = new InlineKeyboardButton(addString);
+		inkB.setCallback_data(addCBC + Constants.CALLBACKSEPARATOR);
 		ikbl.add(inkB);
 		inlKeyboard.add(ikbl);
 		return new InlineKeyboardMarkup(inlKeyboard);

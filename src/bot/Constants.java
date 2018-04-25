@@ -10,6 +10,8 @@ public class Constants {
 	public static final String SLASHSTART ="/start";
 	public static final String WELCOMEMESSAGE ="Ciao  ❤❤\n premi un pulsante del menù per iniziare ad usarmi";
 	public static final String ALLISTMESSAGE = "\nPremi il pulsante della lista che vuoi visualizzare/modificare o premi \"crea\" per crearne una nuova.";
+	public static final String GOTODAY ="Val al giorno 📅";
+	public static final String ADDDAILYTASK ="Aggiungi impegno 📃";
 	public static final String CREATELIST ="Crea 📝";
 	public static final String CREATEITEM ="Aggiungi riga 📝";
 	public static final String PRINTPHOTO = "Stampa 🖨";
@@ -57,4 +59,9 @@ public class Constants {
 	public static final String SENDMENEWCOLOR = "Inviami il nuovo colore nel formato:\n nome R G B \n Dove per R G e B si intendono i valori di rosso verde e blue che vanno da 0 a 255 per esempio \n Rosso 255 0 0";
 	public static final String SHUTDOWN = "/spegni";
 	public static final String BACKUP = "/backup";
+	public static final String NEXTDAY = "➡️";
+	public static final String PREVIOUSDAY = "⬅️";
+	public static final String NOTASKTODAY = "Non ci sono impegni per oggi 😎😎😎😎";
+	
+	
 }

@@ -2,7 +2,9 @@ package bot.organizerbox;
 
 import java.util.ArrayList;
 
-public class ItemList{
+import bot.Constants;
+
+public class ItemList implements ListableOboxItems{
 
 	private ArrayList<Item> itemList;
 	private String name;
@@ -89,6 +91,8 @@ public class ItemList{
 	@Override
 	public String toString()
 	{
+		if(itemList.isEmpty())
+			return "*"+ name +  "* :\n\n" + Constants.EMPTYITEMLIST;
 		return "*"+ name +  "* :\n\n" + getListString();
 	}
 

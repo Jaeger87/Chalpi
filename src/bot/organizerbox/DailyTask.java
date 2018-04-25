@@ -2,7 +2,7 @@ package bot.organizerbox;
 
 import org.joda.time.DateTime;
 
-public class DailyTask implements Comparable<DailyTask>{
+public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 
 	private String task;
 	private DateTime schedule;
