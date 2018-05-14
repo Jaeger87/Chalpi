@@ -12,7 +12,9 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 import com.botticelli.bot.request.methods.types.GsonOwner;
 import com.google.gson.Gson;
@@ -211,18 +213,20 @@ public class OrganizerBox {
 	}
 	
 	
-	private String dailyAgendaString(List<DailyTask> dayAgenda)
+	public List<DailyTask>getTodayAgenda()
 	{
-		StringBuilder sb = new StringBuilder();
-		
-		for(DailyTask dt : dayAgenda)
-		{
-			sb.append(dt.toString());
-			sb.append('\n');
-		}
-		
-		return sb.substring(0, sb.length() - 1);
-		
+		return agenda.checkAgendaToday();
 	}
 	
+	
+	public List<DailyTask> checkAgenda(LocalDateTime day)
+	{
+		return agenda.checkAgenda(day);
+	}
+	
+	public boolean addTask(String task, DateTime schedule)
+	{
+		return agenda.addTask(task, schedule);
+	
+	}
 }

@@ -5,16 +5,18 @@ public class Constants {
 	public static final String FILETOKEN ="files/token.txt";
 	public static final String AUTHORIZEDUSERS ="files/AuthorizedUsers.txt";
 	public static final String SAVEORGANIZERFILE ="files/organizer.txt";
+	public static final String IMAGESFOLDER = "images/";
+	
+	
 	public static final String AGENDA ="Agenda 📆";
 	public static final String MYLISTS ="Le mie liste 🔖";
-	public static final String SLASHSTART ="/start";
+
 	public static final String WELCOMEMESSAGE ="Ciao  ❤❤\n premi un pulsante del menù per iniziare ad usarmi";
+	
+	
 	public static final String ALLISTMESSAGE = "\nPremi il pulsante della lista che vuoi visualizzare/modificare o premi \"crea\" per crearne una nuova.";
-	public static final String GOTODAY ="Val al giorno 📅";
-	public static final String ADDDAILYTASK ="Aggiungi impegno 📃";
 	public static final String CREATELIST ="Crea 📝";
-	public static final String CREATEITEM ="Aggiungi riga 📝";
-	public static final String PRINTPHOTO = "Stampa 🖨";
+	public static final String CREATEITEM ="Aggiungi riga 📝";	
 	public static final String PRINTLIST = "Stampa 🖨";
 	public static final String CALLBACKSEPARATOR = ";";
 	public static final String KILLLIST = "Cancella lista ☠️";
@@ -35,12 +37,25 @@ public class Constants {
 	public static final String RENAMELIST = "Rinomina 🖍";
 	public static final String SENDNEWLISTNAME = "Inviami il nuovo nome della lista.";
 	public static final String SENDNEWITEMNAME = "Inviami la nuova riga.";
+	
 	public static final String PRESSTOPRINT = "Premi il pulsante stampa per stampare la foto.";
+	public static final String PRINTPHOTO = "Stampa 🖨";
+	
+	public static final String SLASHSTART ="/start";
 	public static final String IPCOMMAND ="/ip";
 	public static final String PRINTCOMMAND = "/Stampa ";
-	public static final String IMAGESFOLDER = "images/";
+	public static final String SHUTDOWN = "/spegni";
+	public static final String BACKUP = "/backup";
+	
+	
+	
+	
+	
+	
 	public static final String SETTINGSFILE = "python/botSettings.txt";
 	public static final String SETTINGS = "Impostazioni ⚙️";
+	
+	
 	public static final String MANAGELIGHTS = "Gestisci luci 🚥";
 	public static final String ADDCOLOR = "Aggiungi colore 🎨";
 	public static final String NOCOLORS = "Non ci sono colori salvati al momento";
@@ -57,11 +72,15 @@ public class Constants {
 	public static final String OPS = "Ops... Qualcosa è andato storto!";
 	public static final String SENDMECOLORTOREMOVE = "Scrivi il nome del colore che vuoi cancellare";
 	public static final String SENDMENEWCOLOR = "Inviami il nuovo colore nel formato:\n nome R G B \n Dove per R G e B si intendono i valori di rosso verde e blue che vanno da 0 a 255 per esempio \n Rosso 255 0 0";
-	public static final String SHUTDOWN = "/spegni";
-	public static final String BACKUP = "/backup";
+
+	
+	
 	public static final String NEXTDAY = "➡️";
 	public static final String PREVIOUSDAY = "⬅️";
 	public static final String NOTASKTODAY = "Non ci sono impegni per oggi 😎😎😎😎";
-	
-	
+	public static final String DELETETASK = "Cancella impegno ❌";
+	public static final String GOTODAY ="Val al giorno 📅";
+	public static final String ADDDAILYTASK ="Aggiungi impegno 📃";
+	public static final String BACKTOAGENDA = "Indietro 🔙";
+	public static final String PRINTAGENDA = "Stampa 🖨";
 }

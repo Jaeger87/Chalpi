@@ -83,6 +83,7 @@ public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 		+ TIMESEPARATOR + schedule.getMinuteOfHour() 
 		+ TIMESEPARATOR +schedule.getSecondOfMinute();
 	}
+
 	
 	
 }

@@ -102,6 +102,7 @@ def setup(strip):
 	strip.begin()
 
 def loop(settings, current_color, strip, fname):
+	print 'partito'
 	switch_status = False
 	commands_from_bot = False
 	input_state = True

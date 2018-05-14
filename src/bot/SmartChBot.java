@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
@@ -44,7 +43,6 @@ import com.botticelli.messagereceiver.MessageReceiver;
 import bot.organizerbox.DailyTask;
 import bot.organizerbox.Item;
 import bot.organizerbox.ItemList;
-import bot.organizerbox.ListableOboxItems;
 import bot.organizerbox.OrganizerBox;
 
 public class SmartChBot extends Bot{
@@ -134,7 +132,7 @@ public class SmartChBot extends Bot{
 			emt = new EditMessageTextRequest(c.getMessage().getChat().getId(), c.getMessage().getMessageID(),
 					i.toString());
 			emt.setParse_mode(ParseMode.MARKDOWN);	
-			emt.setReply_markup(itemKeyboardFactory(idList, idItem));
+			emt.setReply_markup(KeyboardUtils.itemKeyboardFactory(idList, idItem));
 			editMessageText(emt);
 			break;
 		case CALLBACKLIST:
@@ -152,9 +150,9 @@ public class SmartChBot extends Bot{
 		case BACKTOMENULIST:
 			List<ItemList> lil = oBox.getAllItemLists(); 
 			emt = new EditMessageTextRequest(c.getMessage().getChat().getId(), c.getMessage().getMessageID(),
-					textListFactory(lil));
+					KeyboardUtils.textListFactory(lil));
 			emt.setParse_mode(ParseMode.MARKDOWN);		
-			emt.setReply_markup(listKeyboardFactory(lil));
+			emt.setReply_markup(KeyboardUtils.listKeyboardFactory(lil));
 			editMessageText(emt);
 			break;
 			
@@ -189,7 +187,7 @@ public class SmartChBot extends Bot{
 			emt = new EditMessageTextRequest(c.getMessage().getChat().getId(), c.getMessage().getMessageID(),
 					Constants.CONFERMATIONDELETELIST + "*" + listToKill.getName() + "*" + Constants.CONFERMATION);
 			emt.setParse_mode(ParseMode.MARKDOWN);	
-			emt.setReply_markup(yesNoKeyboardFactory(listToKill));
+			emt.setReply_markup(KeyboardUtils.yesNoKeyboardFactory(listToKill));
 			editMessageText(emt);
 			break;
 		case KILLITEM:
@@ -228,7 +226,7 @@ public class SmartChBot extends Bot{
 			emt = new EditMessageTextRequest(c.getMessage().getChat().getId(), c.getMessage().getMessageID(),
 					Constants.MENUCOLOR);
 			emt.setParse_mode(ParseMode.MARKDOWN);	
-			emt.setReply_markup(colorsKeyboardFactory());
+			emt.setReply_markup(KeyboardUtils.colorsKeyboardFactory(oBox));
 			editMessageText(emt);
 			break;
 			
@@ -269,6 +267,19 @@ public class SmartChBot extends Bot{
 			
 		case PREVIOUSDAY:
 			break;
+		
+		case ADDDAILYTASK:
+			break;
+			
+		case DAILYTASK:
+			break;
+			
+		case GOTODAY:
+			break;
+			
+		case PRINTAGENDA: 
+			break;
+		
 		default:
 			break;
 
@@ -476,6 +487,18 @@ public class SmartChBot extends Bot{
 		
 		if(m.getText().equals(Constants.AGENDA))
 		{
+			List<DailyTask> today = oBox.getTodayAgenda();
+			String textMessage;
+			LocalDateTime day = new LocalDateTime();
+			if(today == null)
+				textMessage = Constants.NOTASKTODAY;
+			else
+				textMessage = dailyAgendaString(today);
+			
+			MessageToSend mts = new MessageToSend(m.getChat().getId(), textMessage);
+			mts.setReplyMarkup(KeyboardUtils.dailyAgendaKeyboardFactory(today, day));
+			sendMessage(mts);
+			
 			return;
 		}
 		
@@ -498,7 +521,7 @@ public class SmartChBot extends Bot{
 					stickerMenuTrick(m.getChat().getId());
 					
 					MessageToSend mts = new MessageToSend(m.getChat().getId(), oBox.getItemList(idList).toString() + Constants.ITEMMESSAGE);
-					mts.setReplyMarkup(ItemListKeyboardFactory(oBox.getItemList(idList)));
+					mts.setReplyMarkup(KeyboardUtils.ItemListKeyboardFactory(oBox.getItemList(idList)));
 					sendMessage(mts);
 				}
 				return;
@@ -531,7 +554,7 @@ public class SmartChBot extends Bot{
 				
 				mts = new MessageToSend(m.getChat().getId(),Constants.MENUCOLOR);
 				mts.setParseMode(ParseMode.MARKDOWN);	
-				mts.setReplyMarkup(colorsKeyboardFactory());
+				mts.setReplyMarkup(KeyboardUtils.colorsKeyboardFactory(oBox));
 				sendMessage(mts);
 				return;
 			}
@@ -591,7 +614,7 @@ public class SmartChBot extends Bot{
 				stickerMenuTrick(m.getChat().getId());
 
 				MessageToSend mts = new MessageToSend(m.getChat().getId(), oBox.getItemList(idList).toString() + Constants.ITEMMESSAGE);
-				mts.setReplyMarkup(ItemListKeyboardFactory(oBox.getItemList(idList)));
+				mts.setReplyMarkup(KeyboardUtils.ItemListKeyboardFactory(oBox.getItemList(idList)));
 				sendMessage(mts);
 
 				return;
@@ -655,148 +678,12 @@ public class SmartChBot extends Bot{
 	}
 	
 	
-	private InlineKeyboardMarkup listKeyboardFactory(List<ItemList> all)
-	{
-		List<ListableOboxItems> listToInput = new ArrayList<>();
-		
-		for(ItemList il: all)
-			listToInput.add(il);
-		return inlineListOfListable(listToInput, CallBackCodes.CALLBACKLIST, CallBackCodes.CREATELIST, Constants.CREATELIST);
-	
-	}
-	
-	
-	
-	private InlineKeyboardMarkup dailyAgendaKeyboardFactory(List<DailyTask> dtDayly, LocalDateTime day)
-	{
-		List<ListableOboxItems> listToInput = new ArrayList<>();
-		
-		for(DailyTask dt: dtDayly)
-			listToInput.add(dt);
-		InlineKeyboardMarkup result = inlineListOfListable(listToInput, CallBackCodes.DAILYTASK, 
-				CallBackCodes.ADDDAILYTASK, Constants.ADDDAILYTASK);
-		
-		ArrayList<InlineKeyboardButton> lastLine = new ArrayList<>();
-		InlineKeyboardButton button = new InlineKeyboardButton(Constants.PREVIOUSDAY);
-		button.setCallback_data(CallBackCodes.PREVIOUSDAY + Constants.CALLBACKSEPARATOR + day.minusDays(1).toString());
-		lastLine.add(button);
-		
-		button = new InlineKeyboardButton(Constants.GOTODAY);
-		button.setCallback_data(CallBackCodes.GOTODAY + Constants.CALLBACKSEPARATOR);
-		lastLine.add(button);
-		
-		button = new InlineKeyboardButton(Constants.NEXTDAY);
-		button.setCallback_data(CallBackCodes.NEXTDAY + Constants.CALLBACKSEPARATOR + day.plusDays(1).toString());
-		lastLine.add(button);
-		
-		result.AddLine(lastLine);
-		
-		return result;
-	}
-	
-	
-	
-	private InlineKeyboardMarkup inlineListOfListable(List<ListableOboxItems> loi, CallBackCodes itemCBC,
-			CallBackCodes addCBC, String addString)
-	{
-		List<List<InlineKeyboardButton>> inlKeyboard = new ArrayList<List<InlineKeyboardButton>>();
-		for(int i = 0; i < loi.size(); i++)
-		{
-			List<InlineKeyboardButton> ikbl = new ArrayList<>();
-			InlineKeyboardButton inkB = new InlineKeyboardButton(" " + (i+1));
-			inkB.setCallback_data(itemCBC + Constants.CALLBACKSEPARATOR + loi.get(i).getId());
-			ikbl.add(inkB);
-			inlKeyboard.add(ikbl);
-		}
-		List<InlineKeyboardButton> ikbl = new ArrayList<>();
-		InlineKeyboardButton inkB = new InlineKeyboardButton(addString);
-		inkB.setCallback_data(addCBC + Constants.CALLBACKSEPARATOR);
-		ikbl.add(inkB);
-		inlKeyboard.add(ikbl);
-		return new InlineKeyboardMarkup(inlKeyboard);
-	}
-	
-	private String textListFactory(List<ItemList> all)
-	{
-		String text = "";
-		for(int i = 0; i < all.size(); i++)
-			text += (i+1) + ") " + all.get(i).getName() + "\n";
-
-		return text += Constants.ALLISTMESSAGE;
-
-	}
-	
-	
-	private InlineKeyboardMarkup ItemListKeyboardFactory(ItemList itli)
-	{
-		
-		List<List<InlineKeyboardButton>> inlKeyboard = new ArrayList<List<InlineKeyboardButton>>();
-		for(int i = 0; i<itli.size(); i++)
-		{
-			List<InlineKeyboardButton> ikbl = new ArrayList<>();
-			InlineKeyboardButton inkB = new InlineKeyboardButton(" " + (i+1));
-			inkB.setCallback_data(CallBackCodes.CALLBACKITEM + Constants.CALLBACKSEPARATOR + itli.getId() + Constants.CALLBACKSEPARATOR + itli.get(i).getId());
-			ikbl.add(inkB);
-			inlKeyboard.add(ikbl);
-		}
-		List<InlineKeyboardButton> ikbl = new ArrayList<>();
-		InlineKeyboardButton inkB = new InlineKeyboardButton(Constants.CREATEITEM);
-		inkB.setCallback_data(CallBackCodes.CREATEITEM + Constants.CALLBACKSEPARATOR + itli.getId());
-		ikbl.add(inkB);
-		inlKeyboard.add(ikbl);
-		
-		ikbl = new ArrayList<>();
-		inkB = new InlineKeyboardButton(Constants.PRINTLIST);
-		inkB.setCallback_data(CallBackCodes.PRINTLIST + Constants.CALLBACKSEPARATOR + itli.getId());
-		
-		ikbl.add(inkB);
-		
-		inkB = new InlineKeyboardButton(Constants.BACKTOLISTMENU);
-		inkB.setCallback_data(CallBackCodes.BACKTOMENULIST.toString());
-		
-		ikbl.add(inkB);
-		
-		inlKeyboard.add(ikbl);
-		ikbl = new ArrayList<>();
-		
-		inkB = new InlineKeyboardButton(Constants.RENAMELIST);
-		inkB.setCallback_data(CallBackCodes.RENAMELIST + Constants.CALLBACKSEPARATOR + itli.getId());
-		
-		ikbl.add(inkB);
-		
-		inkB = new InlineKeyboardButton(Constants.KILLLIST);
-		inkB.setCallback_data(CallBackCodes.KILLIST + Constants.CALLBACKSEPARATOR + itli.getId());
-		
-		ikbl.add(inkB);
-		inlKeyboard.add(ikbl);
-		
-		
-		return new InlineKeyboardMarkup(inlKeyboard);
-		
-		
-	}
-	
-	private InlineKeyboardMarkup yesNoKeyboardFactory(ItemList itli)
-	{
-		List<List<InlineKeyboardButton>> inlKeyboard = new ArrayList<List<InlineKeyboardButton>>();
-		List<InlineKeyboardButton> ikbl = new ArrayList<>();
-		InlineKeyboardButton inkB = new InlineKeyboardButton(Constants.YESKILL);
-		inkB.setCallback_data(CallBackCodes.CONFERMATIONDELETE + Constants.CALLBACKSEPARATOR + itli.getId());
-		ikbl.add(inkB);
-		inkB = new InlineKeyboardButton(Constants.NOKILL);
-		inkB.setCallback_data(CallBackCodes.CALLBACKLIST + Constants.CALLBACKSEPARATOR + itli.getId());
-		ikbl.add(inkB);
-		inlKeyboard.add(ikbl);
-		return new InlineKeyboardMarkup(inlKeyboard);
-	}
-	
-
 	private void sendListMessage(long recipient)
 	{
 		List<ItemList> lil = oBox.getAllItemLists(); 
-		MessageToSend mts = new MessageToSend(recipient, textListFactory(lil));
+		MessageToSend mts = new MessageToSend(recipient, KeyboardUtils.textListFactory(lil));
 		mts.setParseMode(ParseMode.MARKDOWN);
-		mts.setReplyMarkup(listKeyboardFactory(lil));
+		mts.setReplyMarkup(KeyboardUtils.listKeyboardFactory(lil));
 		sendMessage(mts);
 	}
 	
@@ -810,94 +697,17 @@ public class SmartChBot extends Bot{
 		}
 	}
 	
-	private InlineKeyboardMarkup itemKeyboardFactory(int listID, int itemID)
-	{
-		List<List<InlineKeyboardButton>> inlKeyboard = new ArrayList<List<InlineKeyboardButton>>();
-		List<InlineKeyboardButton> ikbl = new ArrayList<>();
-		ikbl = new ArrayList<>();
-		
-		InlineKeyboardButton inkB = new InlineKeyboardButton(Constants.EDITITEM);
-		inkB.setCallback_data(CallBackCodes.EDITITEM + Constants.CALLBACKSEPARATOR + listID + Constants.CALLBACKSEPARATOR + itemID);
-		
-		ikbl.add(inkB);
-		
-		inkB = new InlineKeyboardButton(Constants.BACKTOLIST);
-		inkB.setCallback_data(CallBackCodes.CALLBACKLIST + Constants.CALLBACKSEPARATOR + listID);
-	
-		ikbl.add(inkB);
-		
-		inlKeyboard.add(ikbl);
-		
-		ikbl = new ArrayList<>();
-		
-		inkB = new InlineKeyboardButton(Constants.KILLITEM);
-		inkB.setCallback_data(CallBackCodes.KILLITEM + Constants.CALLBACKSEPARATOR + listID + Constants.CALLBACKSEPARATOR + itemID);
-		
-		ikbl.add(inkB);
-		inlKeyboard.add(ikbl);
-		
-		
-		return new InlineKeyboardMarkup(inlKeyboard);
-	}
-	
+
 	private void callBackList(ItemList il, long recipient, int messageID)
 	{
 		EditMessageTextRequest emt = new EditMessageTextRequest(recipient,messageID,
 				il.toString() + Constants.ITEMMESSAGE);
 		emt.setParse_mode(ParseMode.MARKDOWN);		
-		emt.setReply_markup(ItemListKeyboardFactory(il));
+		emt.setReply_markup(KeyboardUtils.ItemListKeyboardFactory(il));
 		editMessageText(emt);
 	}
 	
-	private InlineKeyboardMarkup colorsKeyboardFactory()
-	{		
-		List<InlineKeyboardButton> colors = oBox.getColors()
-				.stream()
-				.map(c -> new InlineKeyboardButton(c))
-				.peek(c -> c.setCallback_data(createCallBackData(CallBackCodes.CHANGECOLOR,c.getText())))
-				.collect(Collectors.toList());
-
-		List<List<InlineKeyboardButton>> keyboard = new ArrayList<List<InlineKeyboardButton>>();
-		List<InlineKeyboardButton> line = new ArrayList<>();
-		if (colors.size() > 0) 
-		{
-			line.add(colors.get(0));
-			for (int i = 1; i < colors.size(); i++) 
-			{
-				if (i % 3 == 0) 
-				{
-					keyboard.add(line);
-					line = new ArrayList<>();
-				}
-				line.add(colors.get(i));
-			}
-			keyboard.add(line);
-		}
-		line = new ArrayList<>();
-		InlineKeyboardButton rainbowButton = new InlineKeyboardButton(Constants.RAINBOWMODE);
-		InlineKeyboardButton removeButton = new InlineKeyboardButton(Constants.REMOVECOLOR);
-		InlineKeyboardButton createButton = new InlineKeyboardButton(Constants.ADDCOLOR);
-		
-		rainbowButton.setCallback_data(CallBackCodes.RAINBOWMODE.toString());
-		removeButton.setCallback_data(CallBackCodes.REMOVECOLOR.toString());
-		createButton.setCallback_data(CallBackCodes.ADDCOLOR.toString());
-		
-		line.add(rainbowButton);
-		keyboard.add(line);
-		line = new ArrayList<>();
-		line.add(createButton);
-		line.add(removeButton);
-		
-		keyboard.add(line);
-		
-		line = new ArrayList<>();
-		InlineKeyboardButton backButton = new InlineKeyboardButton(Constants.BACK);
-		backButton.setCallback_data(CallBackCodes.BACKTOCOLORMENU.toString());
-		line.add(backButton);
-		keyboard.add(line);
-		
-		return new InlineKeyboardMarkup(keyboard);
-	}
+	
 	
 	private void stickerMenuTrick(long id)
 	{
@@ -916,17 +726,7 @@ public class SmartChBot extends Bot{
 	}
 	
 	
-	private String createCallBackData(CallBackCodes cbc, String... strings)
-	{
-		StringBuffer sb = new StringBuffer();
-		sb.append(cbc.toString());
-		for(String s : strings)
-		{
-			sb.append(Constants.CALLBACKSEPARATOR);
-			sb.append(s);
-		}
-		return sb.toString();
-	}
+	
 	
 	private void stickerRainbow(long id)
 	{
@@ -948,4 +748,21 @@ public class SmartChBot extends Bot{
 		LocalDate today = new LocalDate();
 		System.out.println(today);
 	}
+	
+	
+	private String dailyAgendaString(List<DailyTask> dayAgenda)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		for(DailyTask dt : dayAgenda)
+		{
+			sb.append(dt.toString());
+			sb.append('\n');
+		}
+		
+		return sb.substring(0, sb.length() - 1);
+		
+	}
+	
+	
 }
