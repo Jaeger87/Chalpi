@@ -269,6 +269,9 @@ public class SmartChBot extends Bot{
 			break;
 		
 		case ADDDAILYTASK:
+			ustatus.setUp(UserPendingRequest.ADDTASK);
+			LocalDate day = Utils.fromStringToDate(values[1]);
+			System.out.println(day);
 			break;
 			
 		case DAILYTASK:
@@ -438,8 +441,6 @@ public class SmartChBot extends Bot{
 	public void textMessage(Message m) {
 		if(isNotAuthorized(m.getFrom().getId()))
 			return;
-
-		System.out.println(m.getText());
 		
 		if(m.getText().equals(Constants.SHUTDOWN))
 		{
@@ -489,11 +490,11 @@ public class SmartChBot extends Bot{
 		{
 			List<DailyTask> today = oBox.getTodayAgenda();
 			String textMessage;
-			LocalDateTime day = new LocalDateTime();
+			LocalDate day = new LocalDate();
 			if(today == null)
 				textMessage = Constants.NOTASKTODAY;
 			else
-				textMessage = dailyAgendaString(today);
+				textMessage = Utils.dailyAgendaString(today);
 			
 			MessageToSend mts = new MessageToSend(m.getChat().getId(), textMessage);
 			mts.setReplyMarkup(KeyboardUtils.dailyAgendaKeyboardFactory(today, day));
@@ -522,6 +523,7 @@ public class SmartChBot extends Bot{
 					
 					MessageToSend mts = new MessageToSend(m.getChat().getId(), oBox.getItemList(idList).toString() + Constants.ITEMMESSAGE);
 					mts.setReplyMarkup(KeyboardUtils.ItemListKeyboardFactory(oBox.getItemList(idList)));
+					mts.setParseMode(ParseMode.MARKDOWN);
 					sendMessage(mts);
 				}
 				return;
@@ -615,6 +617,7 @@ public class SmartChBot extends Bot{
 
 				MessageToSend mts = new MessageToSend(m.getChat().getId(), oBox.getItemList(idList).toString() + Constants.ITEMMESSAGE);
 				mts.setReplyMarkup(KeyboardUtils.ItemListKeyboardFactory(oBox.getItemList(idList)));
+				mts.setParseMode(ParseMode.MARKDOWN);			
 				sendMessage(mts);
 
 				return;
@@ -725,9 +728,6 @@ public class SmartChBot extends Bot{
 		//delay();
 	}
 	
-	
-	
-	
 	private void stickerRainbow(long id)
 	{
 		StickerReferenceToSend srs = new StickerReferenceToSend(id, sc.getRandomRainbowStickers());
@@ -739,7 +739,7 @@ public class SmartChBot extends Bot{
 	@Override
 	public void routine() {
 	
-		
+		/*
 		DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
 		DateTime dt = formatter.parseDateTime("11/01/1987 11:00:12");
 		System.out.println(dt.getYear());
@@ -747,22 +747,12 @@ public class SmartChBot extends Bot{
 		System.out.println(dt.toLocalDate());
 		LocalDate today = new LocalDate();
 		System.out.println(today);
+		*/
+		
 	}
 	
 	
-	private String dailyAgendaString(List<DailyTask> dayAgenda)
-	{
-		StringBuilder sb = new StringBuilder();
-		
-		for(DailyTask dt : dayAgenda)
-		{
-			sb.append(dt.toString());
-			sb.append('\n');
-		}
-		
-		return sb.substring(0, sb.length() - 1);
-		
-	}
+	
 	
 	
 }

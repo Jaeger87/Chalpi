@@ -8,15 +8,17 @@ public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 	private DateTime schedule;
 	private int id;
 	private boolean enable;
+	private boolean notice;
 	private static final char TIMESEPARATOR = ':';
 	
 	
-	public DailyTask(String task, DateTime schedule, int id) 
+	public DailyTask(String task, DateTime schedule, int id, boolean notice) 
 	{
 		this.task = task;
 		this.schedule = schedule;
 		this.id = id;
 		this.enable = true;
+		this.notice = notice;
 	}
 	
 	public String getTask() 
@@ -83,6 +85,12 @@ public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 		+ TIMESEPARATOR + schedule.getMinuteOfHour() 
 		+ TIMESEPARATOR +schedule.getSecondOfMinute();
 	}
+
+	public boolean isNotice()
+	{
+		return notice;
+	}
+
 
 	
 	

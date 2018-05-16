@@ -19,14 +19,14 @@ public class Agenda {
 		lastId = 0;
 	}
 	
-	protected boolean addTask(String task, DateTime schedule)
+	protected boolean addTask(String task, DateTime schedule, boolean notice)
 	{
 		if(!schedule.isAfterNow())
 			return false;
 		LocalDate lc = schedule.toLocalDate();
 		if(!agendaDict.containsKey(lc))
 			agendaDict.put(lc, new HashMap<>());
-		agendaDict.get(lc).put(lastId, new DailyTask(task, schedule,lastId));
+		agendaDict.get(lc).put(lastId, new DailyTask(task, schedule,lastId, notice));
 		lastId++;
 		return true;
 	}

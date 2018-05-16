@@ -43,10 +43,10 @@ public class Constants {
 	
 	public static final String SLASHSTART ="/start";
 	public static final String IPCOMMAND ="/ip";
-	public static final String PRINTCOMMAND = "/Stampa ";
+	public static final String PRINTCOMMAND = "/stampa ";
 	public static final String SHUTDOWN = "/spegni";
 	public static final String BACKUP = "/backup";
-	
+	public static final String RESTORE = "/restore";
 	
 	
 	
@@ -83,4 +83,9 @@ public class Constants {
 	public static final String ADDDAILYTASK ="Aggiungi impegno 📃";
 	public static final String BACKTOAGENDA = "Indietro 🔙";
 	public static final String PRINTAGENDA = "Stampa 🖨";
+	public static final String OPSTASK = "Sembra che qualcosa sia andato storto nel come hai scritto l'impegno, riprova!";
+	public static final String WHATWHENTASK = "Scrivimi che impegno hai e l'orario nel formato: impegno/ore:minuti";
+	public static final String WANNANOTICETASK = "Vuoi un messaggio di avviso 5 minuti prima?";
+	public static final String REPEATETASK = "Vuoi ripetere questo impegno per altre settimane?";
+	public static final String HOWMANYWEEKS = "Quante settimane?";
 }

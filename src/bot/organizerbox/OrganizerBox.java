@@ -224,9 +224,9 @@ public class OrganizerBox {
 		return agenda.checkAgenda(day);
 	}
 	
-	public boolean addTask(String task, DateTime schedule)
+	public boolean addTask(String task, DateTime schedule, boolean notice)
 	{
-		return agenda.addTask(task, schedule);
+		return agenda.addTask(task, schedule, notice);
 	
 	}
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
+import org.joda.time.LocalDate;
 
 import com.botticelli.bot.request.methods.types.InlineKeyboardButton;
 import com.botticelli.bot.request.methods.types.InlineKeyboardMarkup;
@@ -102,73 +102,18 @@ public class KeyboardUtils {
 	
 	
 	
-	public static InlineKeyboardMarkup DailyTaskKeyboardFactory(List<DailyTask> dtList)
-	{
-		
-		DateTime day = dtList.get(0).getSchedule();
-		
-		List<List<InlineKeyboardButton>> inlKeyboard = new ArrayList<List<InlineKeyboardButton>>();
-		for(int i = 0; i<dtList.size(); i++)
-		{
-			List<InlineKeyboardButton> lastLine = new ArrayList<>();
-			InlineKeyboardButton button = new InlineKeyboardButton(" " + (i+1));
-			button.setCallback_data(CallBackCodes.DAILYTASK + Constants.CALLBACKSEPARATOR + dtList.get(i).getId() 
-					+ Constants.CALLBACKSEPARATOR + dtList.get(i).getSchedule().toString());
-			lastLine.add(button);
-			inlKeyboard.add(lastLine);
-		}
-		
-		List<InlineKeyboardButton> lastLine = new ArrayList<>();
-		InlineKeyboardButton inkLeft = new InlineKeyboardButton(Constants.PREVIOUSDAY);
-		inkLeft.setCallback_data(CallBackCodes.PREVIOUSDAY + Constants.CALLBACKSEPARATOR + day.minusDays(1).toString());
-		lastLine.add(inkLeft);
-		
-		
-		InlineKeyboardButton button = new InlineKeyboardButton(Constants.GOTODAY);
-		inkLeft.setCallback_data("" + CallBackCodes.GOTODAY);
-		lastLine.add(button);
-		
-		
-		InlineKeyboardButton inkRight = new InlineKeyboardButton(Constants.NEXTDAY);
-		inkLeft.setCallback_data(CallBackCodes.NEXTDAY + Constants.CALLBACKSEPARATOR + day.plusDays(1).toString());
-		lastLine.add(inkRight);
-		inlKeyboard.add(lastLine);
-		
-		
-		lastLine = new ArrayList<>();
-		button = new InlineKeyboardButton(Constants.ADDDAILYTASK);
-		button.setCallback_data(CallBackCodes.ADDDAILYTASK + Constants.CALLBACKSEPARATOR + day.toString());
-		lastLine.add(button);
-		inlKeyboard.add(lastLine);
-		
-		
-		lastLine = new ArrayList<>();
-		button = new InlineKeyboardButton(Constants.PRINTAGENDA);
-		button.setCallback_data(CallBackCodes.PRINTAGENDA + Constants.CALLBACKSEPARATOR + day.toString());
-		lastLine.add(button);		
-		inlKeyboard.add(lastLine);
-
-		lastLine.add(button);
-		inlKeyboard.add(lastLine);
-		
-		
-		return new InlineKeyboardMarkup(inlKeyboard);
-	}
-	
-	
-	
-	public static InlineKeyboardMarkup dailyAgendaKeyboardFactory(List<DailyTask> dtDayly, LocalDateTime day)
+	public static InlineKeyboardMarkup dailyAgendaKeyboardFactory(List<DailyTask> dtDayly, LocalDate day)
 	{
 		
 		
 		List<ListableOboxItems> listToInput = new ArrayList<>();
 		
-		if(dtDayly != null)
-		
+		if(dtDayly != null)		
 			for(DailyTask dt: dtDayly)
 				listToInput.add(dt);
+		
 		InlineKeyboardMarkup result = inlineListOfListable(listToInput, CallBackCodes.DAILYTASK, 
-			CallBackCodes.ADDDAILYTASK, Constants.ADDDAILYTASK);
+			CallBackCodes.ADDDAILYTASK, Constants.ADDDAILYTASK, day.toString());
 		
 		ArrayList<InlineKeyboardButton> lastLine = new ArrayList<>();
 		InlineKeyboardButton button = new InlineKeyboardButton(Constants.PREVIOUSDAY);
@@ -205,13 +150,13 @@ public class KeyboardUtils {
 		
 		for(ItemList il: all)
 			listToInput.add(il);
-		return KeyboardUtils.inlineListOfListable(listToInput, CallBackCodes.CALLBACKLIST, CallBackCodes.CREATELIST, Constants.CREATELIST);
+		return KeyboardUtils.inlineListOfListable(listToInput, CallBackCodes.CALLBACKLIST, CallBackCodes.CREATELIST, Constants.CREATELIST, null);
 	
 	}
 	
 	
 	private static InlineKeyboardMarkup inlineListOfListable(List<ListableOboxItems> loi, CallBackCodes itemCBC,
-			CallBackCodes addCBC, String addString)
+			CallBackCodes addCBC, String addString, String optionalAddValue)
 	{
 		List<List<InlineKeyboardButton>> inlKeyboard = new ArrayList<List<InlineKeyboardButton>>();
 		for(int i = 0; i < loi.size(); i++)
@@ -224,7 +169,10 @@ public class KeyboardUtils {
 		}
 		List<InlineKeyboardButton> lastLine = new ArrayList<>();
 		InlineKeyboardButton button = new InlineKeyboardButton(addString);
-		button.setCallback_data(addCBC + Constants.CALLBACKSEPARATOR);
+		
+		String callbackData = (optionalAddValue != null) ? addCBC + Constants.CALLBACKSEPARATOR + optionalAddValue : "" + addCBC;
+		
+		button.setCallback_data(callbackData);
 		lastLine.add(button);
 		inlKeyboard.add(lastLine);
 		return new InlineKeyboardMarkup(inlKeyboard);
