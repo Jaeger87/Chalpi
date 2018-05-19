@@ -5,10 +5,6 @@ public enum CallBackCodes {
 
 	//Lettere disponibili
 	/*
-	 * c
-	 * d
-	 * e
-	 * f
 	 * g
 	 * h
 	 * j
@@ -45,7 +41,8 @@ public enum CallBackCodes {
 	PRINTPHOTO("Q"),CALLBACKITEM("I"),CREATELIST("C"), CREATEITEM("N"), CONFERMATIONDELETE("Z"),
 	KILLITEM("K"),KILLIST("M"), PRINTPANORAMIC("W"), ADDCOLOR("T"), CHANGECOLOR("Y"), ACTIVELIGHTS("U"),
 	DISACTIVELIGHTS("X"), RAINBOWMODE("S"), REMOVECOLOR("B"), COLORLIST("D"), BACKTOCOLORMENU("G"), NEXTDAY("F"),
-	PREVIOUSDAY("H"), ADDDAILYTASK("J"), DAILYTASK("O"), GOTODAY("a"), PRINTAGENDA("b");
+	PREVIOUSDAY("H"), ADDDAILYTASK("J"), DAILYTASK("O"), GOTODAY("a"), PRINTAGENDA("b"), YESMEMO("c"), NOMEMO("d"),
+	YESREPEAT("e"), NOREPEAT("f");
 	
 	
 	private String str;
@@ -71,7 +68,7 @@ public enum CallBackCodes {
 	public static CallBackCodes fromString(String text) {
 		  if (text != null) {
 		    for (CallBackCodes c : CallBackCodes.values()) {
-		      if (text.equalsIgnoreCase(c.str)) {
+		      if (text.equals(c.str)) {
 		        return c;
 		      }
 		    }

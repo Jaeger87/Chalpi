@@ -16,7 +16,6 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
@@ -186,7 +185,7 @@ public class SmartChBot extends Bot{
 			emt = new EditMessageTextRequest(c.getMessage().getChat().getId(), c.getMessage().getMessageID(),
 					Constants.CONFERMATIONDELETELIST + "*" + listToKill.getName() + "*" + Constants.CONFERMATION);
 			emt.setParse_mode(ParseMode.MARKDOWN);	
-			emt.setReply_markup(KeyboardUtils.yesNoKeyboardFactory(listToKill));
+			emt.setReply_markup(KeyboardUtils.yesNoDeleteItemKeyboardFactory(listToKill));
 			editMessageText(emt);
 			break;
 		case KILLITEM:
@@ -275,6 +274,35 @@ public class SmartChBot extends Bot{
 			mts = new MessageToSend(c.getMessage().getChat().getId(), Constants.WHATWHENTASK);
 			mts.setReplyMarkup(new ForceReply(true));
 			sendMessage(mts);
+			break;
+		
+		case YESMEMO:
+			oBox.addTask(ustatus.getPendingTaskString(), ustatus.getPendingLocalDateTime().toDateTime(), true);
+			emt = new EditMessageTextRequest(c.getMessage().getChat().getId(), c.getMessage().getMessageID(),
+					Constants.REPEATETASK);
+			emt.setParse_mode(ParseMode.MARKDOWN);
+			emt.setReply_markup(KeyboardUtils.yesNoRepeatKeyboard());
+			editMessageText(emt);
+			break;
+			
+		case NOMEMO:
+			oBox.addTask(ustatus.getPendingTaskString(), ustatus.getPendingLocalDateTime().toDateTime(), true);
+			emt = new EditMessageTextRequest(c.getMessage().getChat().getId(), c.getMessage().getMessageID(),
+					Constants.REPEATETASK);
+			emt.setParse_mode(ParseMode.MARKDOWN);
+			emt.setReply_markup(KeyboardUtils.yesNoRepeatKeyboard());
+			editMessageText(emt);
+			break;
+			
+		case YESREPEAT:
+			
+			
+			break;
+			
+			
+		case NOREPEAT:
+			stickerMenuTrick(c.getMessage().getChat().getId());
+			showAgenda(ustatus.getLastLocalDate(), c.getMessage().getChat().getId());
 			break;
 			
 		case DAILYTASK:
@@ -491,18 +519,7 @@ public class SmartChBot extends Bot{
 		
 		if(m.getText().equals(Constants.AGENDA))
 		{
-			List<DailyTask> today = oBox.getTodayAgenda();
-			String textMessage;
-			LocalDate day = new LocalDate();
-			if(today == null)
-				textMessage = Constants.NOTASKTODAY;
-			else
-				textMessage = Utils.dailyAgendaString(today);
-			
-			MessageToSend mts = new MessageToSend(m.getChat().getId(), textMessage);
-			mts.setReplyMarkup(KeyboardUtils.dailyAgendaKeyboardFactory(today, day));
-			sendMessage(mts);
-			
+			showAgenda(new LocalDate(), m.getChat().getId());
 			return;
 		}
 		
@@ -628,9 +645,12 @@ public class SmartChBot extends Bot{
 			
 			if(m.getReplyToMessage().getText().equals(Constants.WHATWHENTASK))
 			{
-				if(!pendingRegister.get(m.getFrom().getId()).getUp().equals(UserPendingRequest.ADDTASK))
+				
+				UserStatus userStatus = pendingRegister.get(m.getFrom().getId());
+				
+				if(!userStatus.getUp().equals(UserPendingRequest.ADDTASK))
 					return;
-				pendingRegister.get(m.getFrom().getId()).setUp(UserPendingRequest.NONE);
+				userStatus.setUp(UserPendingRequest.NONE);
 				
 				
 				
@@ -642,27 +662,23 @@ public class SmartChBot extends Bot{
 					return;
 				}
 				
-				LocalDate day = pendingRegister.get(m.getFrom().getId()).getLastLocalDate();
-				
-				System.out.println(m.getText());
-				
 				LocalTime lt = Utils.fromStringToTime(values[1]);
 				
-				System.out.println(day.toDateTime(lt));
+				if(lt == null)
+				{
+					//ops
+				}
 				
+				LocalDate day = pendingRegister.get(m.getFrom().getId()).getLastLocalDate();
 				
+				userStatus.setPendingLocalDateTime(day.toLocalDateTime(lt));
+				userStatus.setPendingTaskString(values[0]);
 				
-				/*
-				int idList = pendingRegister.get(m.getFrom().getId()).getLastItemListID();
-				oBox.editItemNameByID(m.getText(), idList,
-						pendingRegister.get(m.getFrom().getId()).getLastItemID());
-				
-
-				MessageToSend mts = new MessageToSend(m.getChat().getId(), oBox.getItemList(idList).toString() + Constants.ITEMMESSAGE);
-				mts.setReplyMarkup(KeyboardUtils.ItemListKeyboardFactory(oBox.getItemList(idList)));
+				MessageToSend mts = new MessageToSend(m.getChat().getId(), Constants.WANNANOTICETASK);
+				mts.setReplyMarkup(KeyboardUtils.yesNoMemoKeyboard());
 				mts.setParseMode(ParseMode.MARKDOWN);			
 				sendMessage(mts);
-				*/
+				
 				return;
 			}
 			
@@ -779,6 +795,23 @@ public class SmartChBot extends Bot{
 		delay();
 	}
 
+	
+	private void showAgenda(LocalDate day, long chatID)
+	{
+		List<DailyTask> agenda = oBox.getDailyAgenda(day);
+		String textMessage;
+		if(agenda == null)
+			textMessage = Constants.NOTASKTODAY;
+		else
+			textMessage = Utils.dailyAgendaString(agenda);
+		
+		MessageToSend mts = new MessageToSend(chatID, textMessage);
+		mts.setReplyMarkup(KeyboardUtils.dailyAgendaKeyboardFactory(agenda, day));
+		mts.setParseMode(ParseMode.MARKDOWN);
+		sendMessage(mts);
+		
+		return;
+	}
 
 	@Override
 	public void routine() {

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import com.botticelli.bot.request.methods.types.InlineKeyboardButton;
@@ -18,6 +17,8 @@ import bot.organizerbox.OrganizerBox;
 public class KeyboardUtils {
 
 	
+	private static InlineKeyboardMarkup yesNoMemoKeyboardStatic;
+	private static InlineKeyboardMarkup yesNoRepeatKeyboardStatic;
 	
 	
 	public static InlineKeyboardMarkup ItemListKeyboardFactory(ItemList itli)
@@ -179,7 +180,7 @@ public class KeyboardUtils {
 	}
 	
 	
-	public static InlineKeyboardMarkup yesNoKeyboardFactory(ItemList itli)
+	public static InlineKeyboardMarkup yesNoDeleteItemKeyboardFactory(ItemList itli)
 	{
 		List<List<InlineKeyboardButton>> inlKeyboard = new ArrayList<List<InlineKeyboardButton>>();
 		List<InlineKeyboardButton> lastLine = new ArrayList<>();
@@ -191,6 +192,50 @@ public class KeyboardUtils {
 		lastLine.add(button);
 		inlKeyboard.add(lastLine);
 		return new InlineKeyboardMarkup(inlKeyboard);
+	}
+	
+	public static InlineKeyboardMarkup yesNoMemoKeyboard()
+	{
+		if(yesNoMemoKeyboardStatic != null)
+			return yesNoMemoKeyboardStatic;
+		yesNoMemoKeyboardStatic = yesNOKeyboardFactory(CallBackCodes.YESMEMO, Constants.YESMEMO, null,
+				CallBackCodes.NOMEMO, Constants.NOMEMO, null);
+		return yesNoMemoKeyboardStatic;
+	}
+	
+	public static InlineKeyboardMarkup yesNoRepeatKeyboard()
+	{
+		if(yesNoRepeatKeyboardStatic != null)
+			return yesNoRepeatKeyboardStatic;
+		yesNoRepeatKeyboardStatic = yesNOKeyboardFactory(CallBackCodes.YESREPEAT, Constants.YESREPEAT, null,
+				CallBackCodes.NOREPEAT, Constants.NOREPEAT, null);
+		return yesNoRepeatKeyboardStatic;
+	}
+	
+	
+	private static InlineKeyboardMarkup yesNOKeyboardFactory(CallBackCodes callbackYES, String textYES,
+			List<String> argsYES, CallBackCodes callbackNO, String textNO, List<String> argsNO)
+	{
+		List<List<InlineKeyboardButton>> inlKeyboard = new ArrayList<List<InlineKeyboardButton>>();
+		List<InlineKeyboardButton> lastLine = new ArrayList<>();
+		lastLine.add(createButton(callbackYES, textYES, argsYES));
+		lastLine.add(createButton(callbackNO, textNO, argsNO));
+		inlKeyboard.add(lastLine);
+		return new InlineKeyboardMarkup(inlKeyboard);
+	}
+	
+	
+	private static InlineKeyboardButton createButton(CallBackCodes callback, String text, List<String> args)
+	{
+		InlineKeyboardButton button = new InlineKeyboardButton(text);
+		String callBackData = "" + callback;
+		
+		if(args != null)
+			for(String s : args)
+				callBackData += Constants.CALLBACKSEPARATOR + s;
+		button.setCallback_data(callBackData);
+		
+		return button;
 	}
 	
 	
@@ -262,11 +307,12 @@ public class KeyboardUtils {
 	{
 		StringBuffer sb = new StringBuffer();
 		sb.append(cbc.toString());
-		for(String s : strings)
-		{
-			sb.append(Constants.CALLBACKSEPARATOR);
-			sb.append(s);
-		}
+		if(strings != null)
+			for(String s : strings)
+			{
+				sb.append(Constants.CALLBACKSEPARATOR);
+				sb.append(s);
+			}
 		return sb.toString();
 	}
 }

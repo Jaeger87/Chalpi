@@ -88,4 +88,8 @@ public class Constants {
 	public static final String WANNANOTICETASK = "Vuoi un messaggio di avviso 5 minuti prima?";
 	public static final String REPEATETASK = "Vuoi ripetere questo impegno per altre settimane?";
 	public static final String HOWMANYWEEKS = "Quante settimane?";
+	public static final String YESMEMO = "Si ⏰";
+	public static final String NOMEMO = "No 😡";
+	public static final String YESREPEAT = "Si 🔄";
+	public static final String NOREPEAT = "No";
 }
