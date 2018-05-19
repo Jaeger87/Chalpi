@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -14,7 +15,7 @@ public class Utils {
 	
 	private static DateTimeFormatter formatterDateTime = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
 	private static DateTimeFormatter formatterDate = DateTimeFormat.forPattern("yyyy-MM-dd");
-	
+	private static DateTimeFormatter formatterTime = DateTimeFormat.forPattern("HH:mm");
 	
 	public static String dailyAgendaString(List<DailyTask> dayAgenda)
 	{
@@ -33,7 +34,7 @@ public class Utils {
 	public static LocalDateTime fromStringToDateTime(String dateToParse)
 	{
 		try{
-			return formatterDateTime.parseDateTime(dateToParse).toLocalDateTime(); 
+			return formatterDateTime.parseLocalDateTime(dateToParse); 
 		}
 		
 		catch(Exception e)
@@ -48,7 +49,7 @@ public class Utils {
 	public static LocalDate fromStringToDate(String dateToParse)
 	{
 		try{
-			return formatterDate.parseDateTime(dateToParse).toLocalDate(); 
+			return formatterDate.parseLocalDateTime(dateToParse).toLocalDate(); 
 		}
 		
 		catch(Exception e)
@@ -58,5 +59,22 @@ public class Utils {
 		
 		return null;
 	}
+	
+	
+	public static LocalTime fromStringToTime(String timeToParse)
+	{
+		try{
+			return formatterTime.parseLocalTime(timeToParse); 
+		}
+		
+		catch(Exception e)
+		{
+			
+		}
+		
+		return null;
+	}
+
+	
 	
 }

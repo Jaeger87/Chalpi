@@ -37,7 +37,7 @@ public class Agenda {
 	}
 	
 	
-	protected List<DailyTask> checkAgenda(LocalDateTime day)
+	private List<DailyTask> checkAgenda(LocalDateTime day)
 	{
 		if(!agendaDict.containsKey(day.toLocalDate()))
 		    return null;
@@ -47,9 +47,10 @@ public class Agenda {
 				.filter(dt -> dt.isEnable())
 				.filter(dt -> dt.check(day.toDateTime()))
 				.sorted()
-				.collect(Collectors.toList());;
+				.collect(Collectors.toList());
 		if(nowTasks.isEmpty())
 			return null;
+		nowTasks.forEach(dt -> dt.disable());
 		return nowTasks;
 	}
 	
@@ -78,4 +79,24 @@ public class Agenda {
 			return null;
 		return agendaDict.get(ld).get(id);
 	}
+	
+	
+	protected List<DailyTask> getTodayDailyAgenda()
+	{
+		return getDailyAgenda(new LocalDate()); 
+	}
+	
+	
+	protected List<DailyTask> getDailyAgenda(LocalDate ld)
+	{
+		if(!agendaDict.containsKey(ld))
+			return null;
+		return agendaDict.get(ld)
+				.values()
+				.stream()
+				.sorted()
+				.collect(Collectors.toList());
+	}
+	
+	
 }

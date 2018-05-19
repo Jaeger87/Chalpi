@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -213,20 +214,28 @@ public class OrganizerBox {
 	}
 	
 	
-	public List<DailyTask>getTodayAgenda()
+	public List<DailyTask>checkTodayAgenda()
 	{
 		return agenda.checkAgendaToday();
 	}
 	
 	
-	public List<DailyTask> checkAgenda(LocalDateTime day)
-	{
-		return agenda.checkAgenda(day);
-	}
-	
 	public boolean addTask(String task, DateTime schedule, boolean notice)
 	{
 		return agenda.addTask(task, schedule, notice);
-	
 	}
+	
+	public List<DailyTask> getTodayAgenda()
+	{
+		return agenda.getTodayDailyAgenda(); 
+	}
+	
+	
+	public List<DailyTask> getDailyAgenda(LocalDate ld)
+	{
+		return agenda.getDailyAgenda(ld);
+	}
+	
+	
+	
 }

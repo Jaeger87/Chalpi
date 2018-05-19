@@ -19,8 +19,7 @@ import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.LocalTime;
 
 import com.botticelli.bot.Bot;
 import com.botticelli.bot.request.methods.DocumentFileToSend;
@@ -272,6 +271,10 @@ public class SmartChBot extends Bot{
 			ustatus.setUp(UserPendingRequest.ADDTASK);
 			LocalDate day = Utils.fromStringToDate(values[1]);
 			System.out.println(day);
+			ustatus.setLastLocalDate(day);
+			mts = new MessageToSend(c.getMessage().getChat().getId(), Constants.WHATWHENTASK);
+			mts.setReplyMarkup(new ForceReply(true));
+			sendMessage(mts);
 			break;
 			
 		case DAILYTASK:
@@ -622,6 +625,47 @@ public class SmartChBot extends Bot{
 
 				return;
 			}
+			
+			if(m.getReplyToMessage().getText().equals(Constants.WHATWHENTASK))
+			{
+				if(!pendingRegister.get(m.getFrom().getId()).getUp().equals(UserPendingRequest.ADDTASK))
+					return;
+				pendingRegister.get(m.getFrom().getId()).setUp(UserPendingRequest.NONE);
+				
+				
+				
+				String[] values = m.getText().split("/");
+				
+				if(values == null || values.length != 2)
+				{
+					
+					return;
+				}
+				
+				LocalDate day = pendingRegister.get(m.getFrom().getId()).getLastLocalDate();
+				
+				System.out.println(m.getText());
+				
+				LocalTime lt = Utils.fromStringToTime(values[1]);
+				
+				System.out.println(day.toDateTime(lt));
+				
+				
+				
+				/*
+				int idList = pendingRegister.get(m.getFrom().getId()).getLastItemListID();
+				oBox.editItemNameByID(m.getText(), idList,
+						pendingRegister.get(m.getFrom().getId()).getLastItemID());
+				
+
+				MessageToSend mts = new MessageToSend(m.getChat().getId(), oBox.getItemList(idList).toString() + Constants.ITEMMESSAGE);
+				mts.setReplyMarkup(KeyboardUtils.ItemListKeyboardFactory(oBox.getItemList(idList)));
+				mts.setParseMode(ParseMode.MARKDOWN);			
+				sendMessage(mts);
+				*/
+				return;
+			}
+			
 			return;
 			
 		}

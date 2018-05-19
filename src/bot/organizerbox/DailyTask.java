@@ -74,7 +74,6 @@ public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 		
 		if(now.getMillis() - schedule.getMillis() > 0)
 			return true;
-		
 		return false;
 	}
 	
