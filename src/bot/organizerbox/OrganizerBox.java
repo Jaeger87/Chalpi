@@ -11,16 +11,14 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 
-import com.botticelli.bot.request.methods.types.GsonOwner;
 import com.google.gson.Gson;
 
 import bot.Constants;
+import bot.SmartChBot;
 
 public class OrganizerBox {
 
@@ -51,7 +49,7 @@ public class OrganizerBox {
 	
 	private void saveMe()
 	{
-		Gson gson = GsonOwner.getInstance().getGson();
+		Gson gson = SmartChBot.gson;
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Constants.SAVEORGANIZERFILE), "utf-8"))) {
 			writer.write(gson.toJson(this));
 		} catch (UnsupportedEncodingException e) {
@@ -59,6 +57,11 @@ public class OrganizerBox {
 		} catch (FileNotFoundException e) {
 			
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
@@ -206,11 +209,13 @@ public class OrganizerBox {
 	public void disableAgendaTask(LocalDate ld, int id)
 	{
 		agenda.disableTask(ld, id);
+		saveMe();
 	}
 	
 	public void enableAgendaTask(LocalDate ld, int id)
 	{
 		agenda.enableTask(ld, id);
+		saveMe();
 	}
 	
 	
@@ -222,7 +227,9 @@ public class OrganizerBox {
 	
 	public boolean addTask(String task, DateTime schedule, boolean notice)
 	{
-		return agenda.addTask(task, schedule, notice);
+		boolean result = agenda.addTask(task, schedule, notice);
+		saveMe();
+		return result;
 	}
 	
 	public List<DailyTask> getTodayAgenda()

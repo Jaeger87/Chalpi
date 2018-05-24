@@ -80,9 +80,9 @@ public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 	@Override
 	public String toString()
 	{
-		return task + " / " + schedule.getHourOfDay() 
-		+ TIMESEPARATOR + schedule.getMinuteOfHour() 
-		+ TIMESEPARATOR +schedule.getSecondOfMinute();
+		return "\\[" + schedule.getHourOfDay() 
+		+ TIMESEPARATOR + schedule.getMinuteOfHour() + "] " + task; 
+
 	}
 
 	public boolean isNotice()

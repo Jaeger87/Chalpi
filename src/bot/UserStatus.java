@@ -11,6 +11,7 @@ public class UserStatus {
 	private LocalDate lastLocalDate;
 	private String pendingTaskString;
 	private LocalDateTime pendingLocalDateTime;
+	private boolean pendingMemo = false;
 	
 	private UserPendingRequest up = UserPendingRequest.NONE;
 	
@@ -82,6 +83,16 @@ public class UserStatus {
 	public void setPendingLocalDateTime(LocalDateTime pendingLocalDateTime)
 	{
 		this.pendingLocalDateTime = pendingLocalDateTime;
+	}
+
+	public boolean getPendingMemo()
+	{
+		return pendingMemo;
+	}
+
+	public void setPendingMemo(boolean pendingMemo)
+	{
+		this.pendingMemo = pendingMemo;
 	}
 	
 	

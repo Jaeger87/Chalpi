@@ -16,6 +16,9 @@ public class Utils {
 	private static DateTimeFormatter formatterDateTime = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
 	private static DateTimeFormatter formatterDate = DateTimeFormat.forPattern("yyyy-MM-dd");
 	private static DateTimeFormatter formatterTime = DateTimeFormat.forPattern("HH:mm");
+	private static DateTimeFormatter formatterDateToString = DateTimeFormat.forPattern("dd-MM-yyyy");
+	
+	
 	
 	public static String dailyAgendaString(List<DailyTask> dayAgenda)
 	{
@@ -75,6 +78,24 @@ public class Utils {
 		return null;
 	}
 
+	public static String localDateToString(LocalDate day)
+	{
+		return day.toString(formatterDateToString);
+	}
 	
+	
+	public static LocalDate fromUserStringToDate(String dateToParse)
+	{
+		try{
+			return formatterDateToString.parseLocalDateTime(dateToParse).toLocalDate(); 
+		}
+		
+		catch(Exception e)
+		{
+			
+		}
+		
+		return null;
+	}
 	
 }

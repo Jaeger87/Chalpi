@@ -28,7 +28,6 @@ import com.botticelli.bot.request.methods.StickerReferenceToSend;
 import com.botticelli.bot.request.methods.types.CallbackQuery;
 import com.botticelli.bot.request.methods.types.ChosenInlineResult;
 import com.botticelli.bot.request.methods.types.ForceReply;
-import com.botticelli.bot.request.methods.types.GsonOwner;
 import com.botticelli.bot.request.methods.types.InlineKeyboardButton;
 import com.botticelli.bot.request.methods.types.InlineKeyboardMarkup;
 import com.botticelli.bot.request.methods.types.InlineQuery;
@@ -37,6 +36,9 @@ import com.botticelli.bot.request.methods.types.ParseMode;
 import com.botticelli.bot.request.methods.types.PreCheckoutQuery;
 import com.botticelli.bot.request.methods.types.ShippingQuery;
 import com.botticelli.messagereceiver.MessageReceiver;
+import com.fatboyindustrial.gsonjodatime.Converters;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import bot.organizerbox.DailyTask;
 import bot.organizerbox.Item;
@@ -54,6 +56,10 @@ public class SmartChBot extends Bot{
 	public static final int TIMETOSLEEP = 855;
 	private String ipAddress = "";
 	private MessageReceiver myOwnmr;
+	public static final Gson gson = Converters
+			.registerLocalDate(Converters.
+					registerDateTime(new GsonBuilder().enableComplexMapKeySerialization())).create();
+	
 	
 	public SmartChBot(String token) throws FileNotFoundException, UnknownHostException, SocketException {
 		super(token);
@@ -80,9 +86,11 @@ public class SmartChBot extends Bot{
 			}
 		}
 		
+		
+		
 		try (FileInputStream inputStream = new FileInputStream(Main.filePath + Constants.SAVEORGANIZERFILE)) {
 			String json = IOUtils.toString(inputStream);
-			oBox = GsonOwner.getInstance().getGson().fromJson(json, OrganizerBox.class);
+			oBox = gson.fromJson(json, OrganizerBox.class);
 		} catch (IOException e) {
 			oBox = new OrganizerBox();
 		}
@@ -115,7 +123,7 @@ public class SmartChBot extends Bot{
 		int idList;
 		int idItem;
 		String filename = "";
-		
+		LocalDate day;
 		
 		switch(cbc)
 		{
@@ -261,15 +269,18 @@ public class SmartChBot extends Bot{
 			break;
 			
 		case NEXTDAY:
+			day = Utils.fromStringToDate(values[1]);
+			showEditAgenda(day,c.getMessage().getChat().getId(), c.getMessage().getMessageID());
 			break;
 			
 		case PREVIOUSDAY:
+			day = Utils.fromStringToDate(values[1]);
+			showEditAgenda(day,c.getMessage().getChat().getId(), c.getMessage().getMessageID());
 			break;
 		
 		case ADDDAILYTASK:
 			ustatus.setUp(UserPendingRequest.ADDTASK);
-			LocalDate day = Utils.fromStringToDate(values[1]);
-			System.out.println(day);
+		    day = Utils.fromStringToDate(values[1]);
 			ustatus.setLastLocalDate(day);
 			mts = new MessageToSend(c.getMessage().getChat().getId(), Constants.WHATWHENTASK);
 			mts.setReplyMarkup(new ForceReply(true));
@@ -295,20 +306,34 @@ public class SmartChBot extends Bot{
 			break;
 			
 		case YESREPEAT:
+			ustatus.setUp(UserPendingRequest.REPEATASK);
+			emt = new EditMessageTextRequest(c.getMessage().getChat().getId(), c.getMessage().getMessageID(),
+					Constants.REPEATETASK);
+			emt.setParse_mode(ParseMode.MARKDOWN);
+			editMessageText(emt);
 			
+			mts = new MessageToSend(c.getMessage().getChat().getId(), Constants.HOWMANYWEEKS);
+			mts.setParseMode(ParseMode.MARKDOWN);
+			mts.setReplyMarkup(new ForceReply(true));
+			sendMessage(mts);
 			
 			break;
 			
 			
 		case NOREPEAT:
 			stickerMenuTrick(c.getMessage().getChat().getId());
-			showAgenda(ustatus.getLastLocalDate(), c.getMessage().getChat().getId());
+			showSendAgenda(ustatus.getLastLocalDate(), c.getMessage().getChat().getId());
 			break;
 			
 		case DAILYTASK:
 			break;
 			
 		case GOTODAY:
+			ustatus.setUp(UserPendingRequest.WHICHDAY);
+			mts = new MessageToSend(c.getMessage().getChat().getId(), Constants.WHICHDAY);
+			mts.setParseMode(ParseMode.MARKDOWN);
+			mts.setReplyMarkup(new ForceReply(true));
+			sendMessage(mts);
 			break;
 			
 		case PRINTAGENDA: 
@@ -519,7 +544,7 @@ public class SmartChBot extends Bot{
 		
 		if(m.getText().equals(Constants.AGENDA))
 		{
-			showAgenda(new LocalDate(), m.getChat().getId());
+			showSendAgenda(new LocalDate(), m.getChat().getId());
 			return;
 		}
 		
@@ -682,6 +707,64 @@ public class SmartChBot extends Bot{
 				return;
 			}
 			
+			
+			if(m.getReplyToMessage().getText().equals(Constants.HOWMANYWEEKS))
+			{
+				
+				UserStatus userStatus = pendingRegister.get(m.getFrom().getId());
+				
+				if(!userStatus.getUp().equals(UserPendingRequest.REPEATASK))
+					return;
+				userStatus.setUp(UserPendingRequest.NONE);
+				
+				int weeks = 0;
+				
+				try
+				{
+			        weeks = Integer.parseInt(m.getText());
+				}
+				
+				catch(Exception e)
+				{
+					//messaggio errore
+					return;
+				}
+				
+				LocalDateTime day = pendingRegister.get(m.getFrom().getId()).getPendingLocalDateTime();
+				
+				for(int i = 0; i < weeks; i++)
+				{
+					day = day.plusDays(7);
+					oBox.addTask(userStatus.getPendingTaskString(), day.toDateTime(), userStatus.getPendingMemo());
+				}
+
+				
+				stickerMenuTrick(m.getChat().getId());
+				showSendAgenda(userStatus.getLastLocalDate(), m.getChat().getId());
+				
+				return;
+			}
+			
+			if(m.getReplyToMessage().getText().equals(Constants.WHICHDAY))
+			{
+				
+				UserStatus userStatus = pendingRegister.get(m.getFrom().getId());
+				
+				if(!userStatus.getUp().equals(UserPendingRequest.WHICHDAY))
+					return;
+				userStatus.setUp(UserPendingRequest.NONE);
+				
+				LocalDate day = Utils.fromUserStringToDate(m.getText());
+				
+				if(day == null)
+				{
+					return;
+				}
+				
+				showSendAgenda(day, m.getChat().getId());
+				
+			}
+			
 			return;
 			
 		}
@@ -796,14 +879,10 @@ public class SmartChBot extends Bot{
 	}
 
 	
-	private void showAgenda(LocalDate day, long chatID)
+	private void showSendAgenda(LocalDate day, long chatID)
 	{
 		List<DailyTask> agenda = oBox.getDailyAgenda(day);
-		String textMessage;
-		if(agenda == null)
-			textMessage = Constants.NOTASKTODAY;
-		else
-			textMessage = Utils.dailyAgendaString(agenda);
+		String textMessage = agendaString(agenda, day);
 		
 		MessageToSend mts = new MessageToSend(chatID, textMessage);
 		mts.setReplyMarkup(KeyboardUtils.dailyAgendaKeyboardFactory(agenda, day));
@@ -813,6 +892,35 @@ public class SmartChBot extends Bot{
 		return;
 	}
 
+	private void showEditAgenda(LocalDate day, long chatID, int messageID)
+	{
+		List<DailyTask> agenda = oBox.getDailyAgenda(day);
+		String textMessage = agendaString(agenda, day);
+		
+		
+		EditMessageTextRequest emt = new EditMessageTextRequest(chatID, messageID,
+				textMessage);
+		emt.setParse_mode(ParseMode.MARKDOWN);
+		emt.setReply_markup(KeyboardUtils.dailyAgendaKeyboardFactory(agenda, day));
+		editMessageText(emt);
+		
+		return;
+	}
+	
+	
+	private String agendaString(List<DailyTask> agenda, LocalDate day)
+	{
+		
+		
+		String textMessage = "***Agenda del: " + Utils.localDateToString(day) + "***\n\n";
+		if(agenda == null)
+			textMessage += Constants.NOTASKTODAY;
+		else
+			textMessage += Utils.dailyAgendaString(agenda);
+		return textMessage;
+	}
+	
+	
 	@Override
 	public void routine() {
 	
