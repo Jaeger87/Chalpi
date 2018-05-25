@@ -93,4 +93,7 @@ public class Constants {
 	public static final String YESREPEAT = "Si 🔄";
 	public static final String NOREPEAT = "No";
 	public static final String WHICHDAY = "Scrivimi il giorno nel formato: giorno-mese-anno";
+	public static final String EDITSAVED = "Salvato";
+	public static final String ACTIVEMEMO = "Attiva memo ⏰";
+	public static final String DISABLEMEMO = "Disattiva memo 😴";
 }

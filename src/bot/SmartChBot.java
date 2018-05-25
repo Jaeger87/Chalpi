@@ -124,6 +124,7 @@ public class SmartChBot extends Bot{
 		int idItem;
 		String filename = "";
 		LocalDate day;
+		int idTask;
 		
 		switch(cbc)
 		{
@@ -326,6 +327,11 @@ public class SmartChBot extends Bot{
 			break;
 			
 		case DAILYTASK:
+			day = Utils.fromStringToDate(values[1]);
+		    idTask = Integer.parseInt(values[2]);
+		    
+		    
+		    //to be continued
 			break;
 			
 		case GOTODAY:
@@ -339,6 +345,19 @@ public class SmartChBot extends Bot{
 		case PRINTAGENDA: 
 			break;
 		
+		case REMOVETASK:
+			day = Utils.fromStringToDate(values[1]);
+		    idTask = Integer.parseInt(values[2]);
+			oBox.removeTask(day, idTask);
+			showEditAgenda(day,c.getMessage().getChat().getId(), c.getMessage().getMessageID());
+			break;
+			
+		case ACTIVEMEMO:
+			break;
+			
+		case DISABLEMEMO:
+			break;
+			
 		default:
 			break;
 

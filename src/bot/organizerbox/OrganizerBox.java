@@ -244,5 +244,11 @@ public class OrganizerBox {
 	}
 	
 	
+	public boolean removeTask(LocalDate ld, int id)
+	{
+		boolean result = agenda.removeTask(ld, id);
+		saveMe();
+		return result;
+	}
 	
 }

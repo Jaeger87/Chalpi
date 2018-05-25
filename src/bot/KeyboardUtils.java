@@ -225,6 +225,28 @@ public class KeyboardUtils {
 	}
 	
 	
+	public static InlineKeyboardMarkup taskKeyboard(LocalDate day, int id)
+	{
+		List<List<InlineKeyboardButton>> inlKeyboard = new ArrayList<List<InlineKeyboardButton>>();
+		
+		List<String> args = new ArrayList<>();
+		args.add(day.toString());
+		args.add(String.valueOf(id));
+		
+		List<InlineKeyboardButton> lastLine = new ArrayList<>();
+		
+		
+		lastLine.add(createButton(CallBackCodes.ACTIVEMEMO, Constants.ACTIVEMEMO, args));
+		lastLine.add(createButton(CallBackCodes.DISABLEMEMO, Constants.DISABLEMEMO, args));
+		inlKeyboard.add(lastLine);
+		
+		lastLine = new ArrayList<>();
+		lastLine.add(createButton(CallBackCodes.REMOVETASK,Constants.DELETETASK, args));
+		inlKeyboard.add(lastLine);
+		return new InlineKeyboardMarkup(inlKeyboard);
+	}
+	
+	
 	private static InlineKeyboardButton createButton(CallBackCodes callback, String text, List<String> args)
 	{
 		InlineKeyboardButton button = new InlineKeyboardButton(text);

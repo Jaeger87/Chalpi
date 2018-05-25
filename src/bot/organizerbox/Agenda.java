@@ -98,5 +98,13 @@ public class Agenda {
 				.collect(Collectors.toList());
 	}
 	
-	
+	protected boolean removeTask(LocalDate ld, int id)
+	{
+		if(!agendaDict.containsKey(ld))
+			return false;
+		if(!agendaDict.get(ld).containsKey(id))
+			return false;
+		agendaDict.get(ld).remove(id);
+		return true;
+	}
 }
