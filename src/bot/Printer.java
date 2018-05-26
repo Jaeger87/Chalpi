@@ -40,7 +40,6 @@ public class Printer {
 	{
 		if (!printText(list.getName()))
 			return false;
-		System.out.println(list.getListString());
 		return printText(list.getListString());
 	}
 	

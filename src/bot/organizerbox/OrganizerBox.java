@@ -251,4 +251,9 @@ public class OrganizerBox {
 		return result;
 	}
 	
+	public DailyTask findTask(LocalDate ld, int id)
+	{
+		return agenda.findTask(ld, id);
+	}
+	
 }

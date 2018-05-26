@@ -114,7 +114,7 @@ public class KeyboardUtils {
 				listToInput.add(dt);
 		
 		InlineKeyboardMarkup result = inlineListOfListable(listToInput, CallBackCodes.DAILYTASK, 
-			CallBackCodes.ADDDAILYTASK, Constants.ADDDAILYTASK, day.toString());
+			CallBackCodes.ADDDAILYTASK, Constants.ADDDAILYTASK, day.toString(), day.toString());
 		
 		ArrayList<InlineKeyboardButton> lastLine = new ArrayList<>();
 		InlineKeyboardButton button = new InlineKeyboardButton(Constants.PREVIOUSDAY);
@@ -151,20 +151,25 @@ public class KeyboardUtils {
 		
 		for(ItemList il: all)
 			listToInput.add(il);
-		return KeyboardUtils.inlineListOfListable(listToInput, CallBackCodes.CALLBACKLIST, CallBackCodes.CREATELIST, Constants.CREATELIST, null);
+		return KeyboardUtils.inlineListOfListable(listToInput, CallBackCodes.CALLBACKLIST, CallBackCodes.CREATELIST, Constants.CREATELIST, null, null);
 	
 	}
 	
-	
+
 	private static InlineKeyboardMarkup inlineListOfListable(List<ListableOboxItems> loi, CallBackCodes itemCBC,
-			CallBackCodes addCBC, String addString, String optionalAddValue)
+			CallBackCodes addCBC, String addString, String optionalAddValue, String optionalListableValue)
 	{
+		String optListable = "";
+		
+		if(optionalAddValue != null)
+			optListable += Constants.CALLBACKSEPARATOR + optionalAddValue;
+		
 		List<List<InlineKeyboardButton>> inlKeyboard = new ArrayList<List<InlineKeyboardButton>>();
 		for(int i = 0; i < loi.size(); i++)
 		{
 			List<InlineKeyboardButton> lastLine = new ArrayList<>();
 			InlineKeyboardButton button = new InlineKeyboardButton(" " + (i+1));
-			button.setCallback_data(itemCBC + Constants.CALLBACKSEPARATOR + loi.get(i).getId());
+			button.setCallback_data(itemCBC + Constants.CALLBACKSEPARATOR + loi.get(i).getId() + optListable);
 			lastLine.add(button);
 			inlKeyboard.add(lastLine);
 		}
@@ -178,7 +183,7 @@ public class KeyboardUtils {
 		inlKeyboard.add(lastLine);
 		return new InlineKeyboardMarkup(inlKeyboard);
 	}
-	
+
 	
 	public static InlineKeyboardMarkup yesNoDeleteItemKeyboardFactory(ItemList itli)
 	{
@@ -242,6 +247,11 @@ public class KeyboardUtils {
 		
 		lastLine = new ArrayList<>();
 		lastLine.add(createButton(CallBackCodes.REMOVETASK,Constants.DELETETASK, args));
+		inlKeyboard.add(lastLine);
+		
+		
+		lastLine = new ArrayList<>();
+		lastLine.add(createButton(CallBackCodes.BACKTOAGENDA,Constants.BACKTOAGENDA, args.subList(0, 1)));
 		inlKeyboard.add(lastLine);
 		return new InlineKeyboardMarkup(inlKeyboard);
 	}

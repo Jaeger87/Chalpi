@@ -71,7 +71,7 @@ public class Agenda {
 		dt.enable();
 	}
 	
-	private DailyTask findTask(LocalDate ld, int id)
+	protected DailyTask findTask(LocalDate ld, int id)
 	{
 		if(!agendaDict.containsKey(ld))
 			return null;

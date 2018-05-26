@@ -40,6 +40,7 @@ public class Constants {
 	
 	public static final String PRESSTOPRINT = "Premi il pulsante stampa per stampare la foto.";
 	public static final String PRINTPHOTO = "Stampa 🖨";
+	public static final String PRINTING = "In Stampa";
 	
 	public static final String SLASHSTART ="/start";
 	public static final String IPCOMMAND ="/ip";

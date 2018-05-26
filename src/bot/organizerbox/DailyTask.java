@@ -2,6 +2,8 @@ package bot.organizerbox;
 
 import org.joda.time.DateTime;
 
+import bot.Utils;
+
 public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 
 	private String task;
@@ -9,7 +11,6 @@ public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 	private int id;
 	private boolean enable;
 	private boolean notice;
-	private static final char TIMESEPARATOR = ':';
 	
 	
 	public DailyTask(String task, DateTime schedule, int id, boolean notice) 
@@ -72,7 +73,7 @@ public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 	public boolean check(DateTime now)
 	{
 		
-		if(now.getMillis() - schedule.getMillis() > 0)
+		if(now.getMillis() - schedule.getMillis() + 5 * 1000 * 60 > 0)
 			return true;
 		return false;
 	}
@@ -80,8 +81,12 @@ public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 	@Override
 	public String toString()
 	{
-		return "\\[" + schedule.getHourOfDay() 
-		+ TIMESEPARATOR + schedule.getMinuteOfHour() + "] " + task; 
+		String alarm = "";
+		
+		if(enable)
+			alarm = " ⏰";
+		
+		return "\\[" + Utils.fromTimeToString(schedule.toLocalTime()) + "] " + task + alarm; 
 
 	}
 

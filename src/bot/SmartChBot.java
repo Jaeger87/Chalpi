@@ -21,6 +21,7 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 
 import com.botticelli.bot.Bot;
+import com.botticelli.bot.request.methods.AnswerCallbackQueryToSend;
 import com.botticelli.bot.request.methods.DocumentFileToSend;
 import com.botticelli.bot.request.methods.EditMessageTextRequest;
 import com.botticelli.bot.request.methods.MessageToSend;
@@ -48,6 +49,7 @@ import bot.organizerbox.OrganizerBox;
 public class SmartChBot extends Bot{
 
 	private HashSet<Long> authorizedUsers;
+	private long masterUser;
 	private OrganizerBox oBox;
 	
 	private HashMap<Long, UserStatus> pendingRegister;
@@ -74,6 +76,7 @@ public class SmartChBot extends Bot{
 		
 		
 		//creating the Set for the auth users
+		boolean masterFound = false;
 		authorizedUsers = new HashSet<>();
 		try (Scanner s = new Scanner(new File(Main.filePath + Constants.AUTHORIZEDUSERS)))
 		{
@@ -83,6 +86,12 @@ public class SmartChBot extends Bot{
 				authorizedUsers.add(l);
 				if(!pendingRegister.containsKey(l))
 				    pendingRegister.put(l, new UserStatus(l));
+				if(!masterFound)
+				{
+					masterFound = true;
+					masterUser = l;
+				}
+				
 			}
 		}
 		
@@ -125,12 +134,14 @@ public class SmartChBot extends Bot{
 		String filename = "";
 		LocalDate day;
 		int idTask;
+		DailyTask dt;
 		
 		switch(cbc)
 		{
 			
 		case PRINTLIST:
 			Printer.printList(oBox.getItemList(Integer.parseInt(values[1])));
+			sendAnswerCallBackQuery(c.getId(), Constants.PRINTING);
 			break;
 		case CALLBACKITEM:
 			idList = Integer.parseInt(values[1]);
@@ -166,11 +177,13 @@ public class SmartChBot extends Bot{
 		case PRINTPHOTO:
 			filename = Constants.IMAGESFOLDER + values[1] + ".png";
 			Printer.printPhoto(downloadFileFromTelegramServer(values[1], filename));
+			sendAnswerCallBackQuery(c.getId(), Constants.PRINTING);
 			break;
 			
 		case PRINTPANORAMIC:
 			filename = Constants.IMAGESFOLDER + values[1] + ".png";
 			Printer.printPhoto(downloadFileFromTelegramServer(values[1], filename));
+			sendAnswerCallBackQuery(c.getId(), Constants.PRINTING);
 			break;
 			
 		case CREATEITEM:
@@ -327,11 +340,16 @@ public class SmartChBot extends Bot{
 			break;
 			
 		case DAILYTASK:
-			day = Utils.fromStringToDate(values[1]);
-		    idTask = Integer.parseInt(values[2]);
+			idTask = Integer.parseInt(values[1]);
+			day = Utils.fromStringToDate(values[2]);
+		    dt = oBox.findTask(day, idTask);
 		    
+		    emt = new EditMessageTextRequest(c.getMessage().getChat().getId(), c.getMessage().getMessageID(),
+					dt.toString());
+			emt.setParse_mode(ParseMode.MARKDOWN);
+			emt.setReply_markup(KeyboardUtils.taskKeyboard(day, idTask));
+			editMessageText(emt);
 		    
-		    //to be continued
 			break;
 			
 		case GOTODAY:
@@ -343,6 +361,10 @@ public class SmartChBot extends Bot{
 			break;
 			
 		case PRINTAGENDA: 
+			day = Utils.fromStringToDate(values[1]);
+			Printer.printText(agendaString(oBox.getDailyAgenda(day), day));
+			sendAnswerCallBackQuery(c.getId(), Constants.PRINTING);
+			
 			break;
 		
 		case REMOVETASK:
@@ -353,9 +375,42 @@ public class SmartChBot extends Bot{
 			break;
 			
 		case ACTIVEMEMO:
+			day = Utils.fromStringToDate(values[1]);
+		    idTask = Integer.parseInt(values[2]);
+		    
+		    oBox.enableAgendaTask(day,  idTask);
+		    dt = oBox.findTask(day, idTask);
+		    
+		    sendAnswerCallBackQuery(c.getId(), Constants.EDITSAVED);
+		    
+		    emt = new EditMessageTextRequest(c.getMessage().getChat().getId(), c.getMessage().getMessageID(),
+					dt.toString());
+			emt.setParse_mode(ParseMode.MARKDOWN);
+			emt.setReply_markup(KeyboardUtils.taskKeyboard(day, idTask));
+			editMessageText(emt);
+		    
 			break;
 			
 		case DISABLEMEMO:
+			day = Utils.fromStringToDate(values[1]);
+		    idTask = Integer.parseInt(values[2]);
+		    
+		    oBox.disableAgendaTask(day,  idTask);
+		    dt = oBox.findTask(day, idTask);
+		    
+		    sendAnswerCallBackQuery(c.getId(), Constants.EDITSAVED);
+		    
+		    
+		    emt = new EditMessageTextRequest(c.getMessage().getChat().getId(), c.getMessage().getMessageID(),
+					dt.toString());
+			emt.setParse_mode(ParseMode.MARKDOWN);
+			emt.setReply_markup(KeyboardUtils.taskKeyboard(day, idTask));
+			editMessageText(emt);
+			break;
+			
+		case BACKTOAGENDA:
+			day = Utils.fromStringToDate(values[1]);
+			showEditAgenda(day,c.getMessage().getChat().getId(), c.getMessage().getMessageID());
 			break;
 			
 		default:
@@ -940,18 +995,30 @@ public class SmartChBot extends Bot{
 	}
 	
 	
+	private void sendAnswerCallBackQuery(String callBackID, String text)
+	{
+		AnswerCallbackQueryToSend acqs = new AnswerCallbackQueryToSend(callBackID);
+	    acqs.setText(text);	    
+	    answerCallbackQuery(acqs);
+	}
+	
+	
 	@Override
 	public void routine() {
 	
-		/*
-		DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
-		DateTime dt = formatter.parseDateTime("11/01/1987 11:00:12");
-		System.out.println(dt.getYear());
-		System.out.println(dt.getDayOfMonth());
-		System.out.println(dt.toLocalDate());
-		LocalDate today = new LocalDate();
-		System.out.println(today);
-		*/
+
+		List<DailyTask> alerts = oBox.checkTodayAgenda();
+		
+		if(alerts != null)
+		{
+			for(DailyTask dt : alerts)
+			{
+				MessageToSend mts = new MessageToSend(masterUser, dt.getTask());
+				sendMessage(mts);
+				delay();
+			}
+		
+		}
 		
 	}
 	

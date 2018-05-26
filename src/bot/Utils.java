@@ -78,6 +78,12 @@ public class Utils {
 		return null;
 	}
 
+	public static String fromTimeToString(LocalTime timeToParse)
+	{
+		return timeToParse.toString(formatterTime); 
+	}
+	
+	
 	public static String localDateToString(LocalDate day)
 	{
 		return day.toString(formatterDateToString);

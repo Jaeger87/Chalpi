@@ -5,7 +5,6 @@ public enum CallBackCodes {
 
 	//Lettere disponibili
 	/*
-	 * i
 	 * k
 	 * l
 	 * m
@@ -40,7 +39,7 @@ public enum CallBackCodes {
 	KILLITEM("K"),KILLIST("M"), PRINTPANORAMIC("W"), ADDCOLOR("T"), CHANGECOLOR("Y"), ACTIVELIGHTS("U"),
 	DISACTIVELIGHTS("X"), RAINBOWMODE("S"), REMOVECOLOR("B"), COLORLIST("D"), BACKTOCOLORMENU("G"), NEXTDAY("F"),
 	PREVIOUSDAY("H"), ADDDAILYTASK("J"), DAILYTASK("O"), GOTODAY("a"), PRINTAGENDA("b"), YESMEMO("c"), NOMEMO("d"),
-	YESREPEAT("e"), NOREPEAT("f"), REMOVETASK("g"), ACTIVEMEMO("h"), DISABLEMEMO("j");
+	YESREPEAT("e"), NOREPEAT("f"), REMOVETASK("g"), ACTIVEMEMO("h"), DISABLEMEMO("j"), BACKTOAGENDA("i");
 	
 	
 	private String str;
