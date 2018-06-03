@@ -113,8 +113,14 @@ public class KeyboardUtils {
 			for(DailyTask dt: dtDayly)
 				listToInput.add(dt);
 		
-		InlineKeyboardMarkup result = inlineListOfListable(listToInput, CallBackCodes.DAILYTASK, 
-			CallBackCodes.ADDDAILYTASK, Constants.ADDDAILYTASK, day.toString(), day.toString());
+		InlineKeyboardMarkup result;
+		
+		if(day.isBefore(LocalDate.now()))
+			result = inlineListOfListable(listToInput, CallBackCodes.DAILYTASK, 
+					null, null, day.toString(), day.toString());
+		else
+			result = inlineListOfListable(listToInput, CallBackCodes.DAILYTASK, 
+					CallBackCodes.ADDDAILYTASK, Constants.ADDDAILYTASK, day.toString(), day.toString());
 		
 		ArrayList<InlineKeyboardButton> lastLine = new ArrayList<>();
 		InlineKeyboardButton button = new InlineKeyboardButton(Constants.PREVIOUSDAY);
@@ -173,14 +179,18 @@ public class KeyboardUtils {
 			lastLine.add(button);
 			inlKeyboard.add(lastLine);
 		}
-		List<InlineKeyboardButton> lastLine = new ArrayList<>();
-		InlineKeyboardButton button = new InlineKeyboardButton(addString);
 		
-		String callbackData = (optionalAddValue != null) ? addCBC + Constants.CALLBACKSEPARATOR + optionalAddValue : "" + addCBC;
+		if(addCBC != null && addString != null)
+		{
+			List<InlineKeyboardButton> lastLine = new ArrayList<>();
+			InlineKeyboardButton button = new InlineKeyboardButton(addString);
 		
-		button.setCallback_data(callbackData);
-		lastLine.add(button);
-		inlKeyboard.add(lastLine);
+			String callbackData = (optionalAddValue != null) ? addCBC + Constants.CALLBACKSEPARATOR + optionalAddValue : "" + addCBC;
+		
+			button.setCallback_data(callbackData);
+			lastLine.add(button);
+			inlKeyboard.add(lastLine);
+		}
 		return new InlineKeyboardMarkup(inlKeyboard);
 	}
 

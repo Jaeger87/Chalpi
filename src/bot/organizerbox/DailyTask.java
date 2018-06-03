@@ -49,12 +49,14 @@ public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 
 	public void disable()
 	{
+		
 		enable = false;
 	}
 
 	public void enable()
 	{
-		enable = true;
+		if(!isOver())
+			enable = true;
 	}
 	
 	public int getId() 
@@ -96,6 +98,10 @@ public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 	}
 
 
+	private boolean isOver()
+	{
+		return new DateTime().getMillis()  > schedule.getMillis() - 5 * 1000 * 60;
+	}
 	
 	
 }

@@ -49,8 +49,7 @@ public class Constants {
 	public static final String BACKUP = "/backup";
 	public static final String RESTORE = "/restore";
 	
-	
-	
+	public static final String SENDRESTOREFILE = "Inviami il file di backup";
 	
 	
 	public static final String SETTINGSFILE = "python/botSettings.txt";
@@ -97,4 +96,6 @@ public class Constants {
 	public static final String EDITSAVED = "Salvato";
 	public static final String ACTIVEMEMO = "Attiva memo ⏰";
 	public static final String DISABLEMEMO = "Disattiva memo 😴";
+	public static final String OPSWEEK = "Non hai inviato un numero, il task è salvato correttamente ma non le ripetizioni.";
+	public static final String OPSDATA = "Il formato è sbagliato, riprova!";
 }

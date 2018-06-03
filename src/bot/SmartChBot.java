@@ -757,7 +757,7 @@ public class SmartChBot extends Bot{
 				
 				if(values == null || values.length != 2)
 				{
-					
+					sendOPSMessage(userStatus, m.getChat().getId());
 					return;
 				}
 				
@@ -765,7 +765,8 @@ public class SmartChBot extends Bot{
 				
 				if(lt == null)
 				{
-					//ops
+					sendOPSMessage(userStatus, m.getChat().getId());
+					return;
 				}
 				
 				LocalDate day = pendingRegister.get(m.getFrom().getId()).getLastLocalDate();
@@ -800,7 +801,11 @@ public class SmartChBot extends Bot{
 				
 				catch(Exception e)
 				{
-					//messaggio errore
+					userStatus.setUp(UserPendingRequest.NONE);
+					MessageToSend mts = new MessageToSend(m.getChat().getId(), Constants.OPSWEEK);
+					mts.setReplyMarkup(menuContainer.getMainMenu());
+					mts.setParseMode(ParseMode.MARKDOWN);
+					sendMessage(mts);
 					return;
 				}
 				
@@ -832,6 +837,11 @@ public class SmartChBot extends Bot{
 				
 				if(day == null)
 				{
+					userStatus.setUp(UserPendingRequest.NONE);
+					MessageToSend mts = new MessageToSend(m.getChat().getId(), Constants.OPSDATA);
+					mts.setReplyMarkup(menuContainer.getMainMenu());
+					mts.setParseMode(ParseMode.MARKDOWN);
+					sendMessage(mts);
 					return;
 				}
 				
@@ -1023,7 +1033,15 @@ public class SmartChBot extends Bot{
 	}
 	
 	
-	
+	private void sendOPSMessage(UserStatus userStatus, long chatID)
+	{
+		userStatus.setUp(UserPendingRequest.NONE);
+		MessageToSend mts = new MessageToSend(chatID, Constants.OPSTASK);
+		mts.setReplyMarkup(menuContainer.getMainMenu());
+		mts.setParseMode(ParseMode.MARKDOWN);
+		sendMessage(mts);
+		return;
+	}
 	
 	
 }
