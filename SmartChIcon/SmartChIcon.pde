@@ -19,7 +19,7 @@ void setup()
   strokeWeight(4);
   line(183,628,209,628);
   
-  
+  //led
   fill(0,255,0);
   noStroke();
   ellipse(229, 611, 8, 8);
@@ -28,10 +28,10 @@ void setup()
   stroke(0);
   
   strokeWeight(7);
-  fill(15);
+  fill(30);
   rect(250,614,22,29,7);
   noFill();
-  stroke(220);
+  stroke(#FFEB98);
   strokeWeight(2);
   ellipse(261, 629, 21, 21);
   strokeWeight(4);
