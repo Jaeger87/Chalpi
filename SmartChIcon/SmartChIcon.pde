@@ -39,9 +39,9 @@ void setup()
   strokeWeight(2);
   ellipse(XBoard + 121, YBoard + 424, 21, 21);
   strokeWeight(4);
-  line(XBoard + 120,YBoard + 424,260,625);
+  line(XBoard + 120,YBoard + 424,XBoard + 120,YBoard + 420);
   strokeWeight(2);
-  line(XBoard + 120,YBoard + 424,266,623);
+  line(XBoard + 120,YBoard + 424,XBoard + 126,YBoard + 418);
 
 
  
