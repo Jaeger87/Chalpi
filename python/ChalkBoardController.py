@@ -20,7 +20,8 @@ strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, 
 fname = 'botSettings.txt'
 settings = {'lightsOff':False,'rainbow':False,'currentColor':{'red':255,'green':255,'blue':255}}
 current_color = Color(255,255,255)
-
+touchPinGPIO = 23
+buttonPinGPIO = 16
 
 def stripOn(strip, color):
 	for i in range(strip.numPixels()):
@@ -116,8 +117,8 @@ def loop(settings, current_color, strip, fname):
 				commands_from_bot = True
 				settings = json.load(f)
 			os.remove(fname)
-		input_state = not(GPIO.input(23))
-		second_button_state = GPIO.input(16)
+		input_state = not(GPIO.input(touchPinGPIO))
+		second_button_state = GPIO.input(buttonPinGPIO)
 		if second_button_state:
 			current_color = Color(255,255,255)
 			change_light = True
