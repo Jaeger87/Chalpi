@@ -34,6 +34,20 @@ public class Utils {
 		
 	}
 	
+	public static String dailyAgendaStringToPrint(List<DailyTask> dayAgenda)
+	{
+		StringBuilder sb = new StringBuilder();
+		
+		for(DailyTask dt : dayAgenda)
+		{
+			sb.append(dt.toString().substring(1));
+			sb.append('\n');
+		}
+		
+		return sb.substring(0, sb.length() - 1);
+	}
+	
+	
 	public static LocalDateTime fromStringToDateTime(String dateToParse)
 	{
 		try{

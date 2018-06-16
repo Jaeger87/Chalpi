@@ -48,6 +48,8 @@ public class Constants {
 	public static final String SHUTDOWN = "/spegni";
 	public static final String BACKUP = "/backup";
 	public static final String RESTORE = "/restore";
+	public static final String REBOOT = "/riavvia";
+	
 	
 	public static final String SENDRESTOREFILE = "Inviami il file di backup";
 	

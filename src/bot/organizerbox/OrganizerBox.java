@@ -18,7 +18,7 @@ import org.joda.time.LocalDate;
 import com.google.gson.Gson;
 
 import bot.Constants;
-import bot.SmartChBot;
+import bot.ChalpiBot;
 
 public class OrganizerBox {
 
@@ -49,7 +49,7 @@ public class OrganizerBox {
 	
 	private void saveMe()
 	{
-		Gson gson = SmartChBot.gson;
+		Gson gson = ChalpiBot.gson;
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(Constants.SAVEORGANIZERFILE), "utf-8"))) {
 			writer.write(gson.toJson(this));
 		} catch (UnsupportedEncodingException e) {

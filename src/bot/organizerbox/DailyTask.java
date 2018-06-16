@@ -89,7 +89,6 @@ public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 			alarm = " ⏰";
 		
 		return "\\[" + Utils.fromTimeToString(schedule.toLocalTime()) + "] " + task + alarm; 
-
 	}
 
 	public boolean isNotice()

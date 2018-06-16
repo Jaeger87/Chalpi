@@ -46,7 +46,7 @@ import bot.organizerbox.Item;
 import bot.organizerbox.ItemList;
 import bot.organizerbox.OrganizerBox;
 
-public class SmartChBot extends Bot{
+public class ChalpiBot extends Bot{
 
 	private HashSet<Long> authorizedUsers;
 	private long masterUser;
@@ -63,7 +63,7 @@ public class SmartChBot extends Bot{
 					registerDateTime(new GsonBuilder().enableComplexMapKeySerialization())).create();
 	
 	
-	public SmartChBot(String token) throws FileNotFoundException, UnknownHostException, SocketException {
+	public ChalpiBot(String token) throws FileNotFoundException, UnknownHostException, SocketException {
 		super(token);
 		Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
         for (NetworkInterface netint : Collections.list(nets))
@@ -311,7 +311,7 @@ public class SmartChBot extends Bot{
 			break;
 			
 		case NOMEMO:
-			oBox.addTask(ustatus.getPendingTaskString(), ustatus.getPendingLocalDateTime().toDateTime(), true);
+			oBox.addTask(ustatus.getPendingTaskString(), ustatus.getPendingLocalDateTime().toDateTime(), false);
 			emt = new EditMessageTextRequest(c.getMessage().getChat().getId(), c.getMessage().getMessageID(),
 					Constants.REPEATETASK);
 			emt.setParse_mode(ParseMode.MARKDOWN);
@@ -362,7 +362,7 @@ public class SmartChBot extends Bot{
 			
 		case PRINTAGENDA: 
 			day = Utils.fromStringToDate(values[1]);
-			Printer.printText(agendaString(oBox.getDailyAgenda(day), day));
+			Printer.printText(agendaStringToPrint(oBox.getDailyAgenda(day), day));
 			sendAnswerCallBackQuery(c.getId(), Constants.PRINTING);
 			
 			break;
@@ -571,6 +571,31 @@ public class SmartChBot extends Bot{
 	public void textMessage(Message m) {
 		if(isNotAuthorized(m.getFrom().getId()))
 			return;
+		
+		if(m.getText().equals(Constants.REBOOT))
+		{
+			
+			oBox.setLightsOff();
+			//
+			delay();
+			myOwnmr.stopExecution();
+			
+			ProcessBuilder pb = new ProcessBuilder("sudo", "reboot");
+			try 
+			{
+				Process p = pb.start();
+				p.waitFor();
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			} 
+			catch (InterruptedException e) 
+			{
+				e.printStackTrace();
+			}
+			return;
+		}
 		
 		if(m.getText().equals(Constants.SHUTDOWN))
 		{
@@ -994,8 +1019,6 @@ public class SmartChBot extends Bot{
 	
 	private String agendaString(List<DailyTask> agenda, LocalDate day)
 	{
-		
-		
 		String textMessage = "***Agenda del: " + Utils.localDateToString(day) + "***\n\n";
 		if(agenda == null)
 			textMessage += Constants.NOTASKTODAY;
@@ -1004,6 +1027,16 @@ public class SmartChBot extends Bot{
 		return textMessage;
 	}
 	
+	
+	private String agendaStringToPrint(List<DailyTask> agenda, LocalDate day)
+	{
+		String textMessage = "Agenda del: " + Utils.localDateToString(day) + "\n\n";
+		if(agenda == null)
+			textMessage += Constants.NOTASKTODAY;
+		else
+			textMessage += Utils.dailyAgendaStringToPrint(agenda);
+		return textMessage;
+	}
 	
 	private void sendAnswerCallBackQuery(String callBackID, String text)
 	{

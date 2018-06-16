@@ -25,7 +25,7 @@ public class Main {
 			}
 		}
 		
-		SmartChBot scb = new SmartChBot(tkn);
+		ChalpiBot scb = new ChalpiBot(tkn);
 		MessageReceiver mr = new MessageReceiver(scb, 850, 1);
 		scb.setMessageReceiver(mr);
 		mr.ignoreEditedMessages();
