@@ -19,9 +19,12 @@ LED_STRIP      = ws.WS2811_STRIP_GRB   # Strip type and colour ordering
 strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL, LED_STRIP)
 fname = 'botSettings.txt'
 settings = {'lightsOff':False,'rainbow':False,'currentColor':{'red':255,'green':255,'blue':255}}
-current_color = Color(255,255,255)
+current_color = Color(127,127,127)
 touchPinGPIO = 23
 buttonPinGPIO = 16
+script_dir = os.path.dirname(__file__)
+abs_file_path = os.path.join(script_dir, fname)
+
 
 def stripOn(strip, color):
 	for i in range(strip.numPixels()):
@@ -102,7 +105,7 @@ def setup(strip):
 	GPIO.setup(16, GPIO.IN)
 	strip.begin()
 
-def loop(settings, current_color, strip, fname):
+def loop(settings, current_color, strip, abs_file_path):
 	print 'partito'
 	switch_status = False
 	commands_from_bot = False
@@ -112,15 +115,15 @@ def loop(settings, current_color, strip, fname):
 	stepRainbow = 0
 	rainbowMode = False
 	while True:
-		if os.path.isfile(fname):
-			with open(fname,'U') as f:
+		if os.path.isfile(abs_file_path):
+			with open(abs_file_path,'U') as f:
 				commands_from_bot = True
 				settings = json.load(f)
-			os.remove(fname)
+			os.remove(abs_file_path)
 		input_state = not(GPIO.input(touchPinGPIO))
 		second_button_state = GPIO.input(buttonPinGPIO)
 		if second_button_state:
-			current_color = Color(255,255,255)
+			current_color = Color(127,127,127)
 			change_light = True
 		if commands_from_bot:
 			cc =  settings['currentColor']
@@ -143,9 +146,7 @@ def loop(settings, current_color, strip, fname):
 		prev_on = now_on
 		time.sleep(0.3)
 
- 
+
 setup(strip)
 
-loop(settings, current_color, strip, fname)    
-        
-        
+loop(settings, current_color, strip, abs_file_path)

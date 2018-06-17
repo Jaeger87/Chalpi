@@ -23,7 +23,9 @@ public class Printer {
 	
 	public static synchronized boolean printPhoto(File f) 
 	{
+		printText("->->->->->->->->->->->->->->->-> \n\n");
 		return print(new ProcessBuilder("bash" , printPhotoScript, f.getAbsolutePath()));
+		
 	}
 
 	public static synchronized boolean printPhotoPanoramic(File f) 
