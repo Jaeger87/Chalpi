@@ -1,6 +1,7 @@
 package bot;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -357,4 +358,72 @@ public class KeyboardUtils {
 			}
 		return sb.toString();
 	}
+	
+	public static InlineKeyboardMarkup getCalendar(LocalDate day)
+	{
+		List<List<InlineKeyboardButton>> keyboard = new ArrayList<List<InlineKeyboardButton>>();
+		
+		
+		int dayOfMonth = Utils.daysOfMonth(day);
+		
+		LocalDate indexDay = day.minusDays(day.getDayOfMonth() - 1);
+		
+		List<Triple<CallBackCodes, String, List<String>>> row = new LinkedList<>();
+		
+		int rowIndex = 1;
+		
+		for(; rowIndex < indexDay.getDayOfWeek(); rowIndex++)
+			row.add(new Triple<CallBackCodes, String,  List<String>>(CallBackCodes.NODAY, "-", null)); 
+		
+		for(; rowIndex < 7; rowIndex++)
+		{
+			row.add(new Triple<CallBackCodes, String, List<String>>(CallBackCodes.DAYCHOOSEN, "" +
+					indexDay.getDayOfMonth(), Utils.list1FromString(indexDay.toString())));
+			indexDay = indexDay.plusDays(1);
+		}
+		
+		keyboard.add(buildBottonsLine(row));
+		
+		while(indexDay.getDayOfMonth() < dayOfMonth - 7)
+		{
+			row = new LinkedList<>();
+			for(int i = 0; i < 7; i++)
+			{
+				row.add(new Triple<CallBackCodes, String, List<String>>(CallBackCodes.DAYCHOOSEN, "" +
+						indexDay.getDayOfMonth(), Utils.list1FromString(indexDay.toString())));
+				indexDay = indexDay.plusDays(1);
+			}
+			keyboard.add(buildBottonsLine(row));
+		}
+		
+		rowIndex = 0;
+		row = new LinkedList<>();
+		
+		while(indexDay.getDayOfMonth() < dayOfMonth)
+		{
+			row.add(new Triple<CallBackCodes, String, List<String>>(CallBackCodes.DAYCHOOSEN, "" +
+					indexDay.getDayOfMonth(), Utils.list1FromString(indexDay.toString())));
+			indexDay = indexDay.plusDays(1);
+			rowIndex++;
+		}
+		
+		for(; rowIndex < 7; rowIndex++)
+			row.add(new Triple<CallBackCodes, String,  List<String>>(CallBackCodes.NODAY, "-", null)); 
+		
+		keyboard.add(buildBottonsLine(row));
+		
+		return new InlineKeyboardMarkup(keyboard);
+		
+	}
+	
+	
+	private static List<InlineKeyboardButton> buildBottonsLine(List<Triple<CallBackCodes, String, List<String>>> triples)
+	{
+		List<InlineKeyboardButton> line = new ArrayList<>();
+		
+		for(Triple<CallBackCodes, String, List<String>> t : triples)
+			line.add(createButton(t.getLeft(), t.getCenter(), t.getRight()));
+		return line;
+	}
+	
 }

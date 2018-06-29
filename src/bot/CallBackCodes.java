@@ -5,10 +5,6 @@ public enum CallBackCodes {
 
 	//Lettere disponibili
 	/*
-	 * k
-	 * l
-	 * m
-	 * n
 	 * o
 	 * p
 	 * q
@@ -32,6 +28,15 @@ public enum CallBackCodes {
 	 * +
 	 * -
 	 * ?
+	 * £
+	 * !
+	 * %
+	 * &
+	 *(
+	 *)
+	 *=
+	 *{
+	 *}
 	 */
 	
 	RENAMELIST("R"),EDITITEM("E"),BACKTOMENULIST("A"),PRINTLIST("P") ,CALLBACKLIST("L"),
@@ -39,7 +44,8 @@ public enum CallBackCodes {
 	KILLITEM("K"),KILLIST("M"), PRINTPANORAMIC("W"), ADDCOLOR("T"), CHANGECOLOR("Y"), ACTIVELIGHTS("U"),
 	DISACTIVELIGHTS("X"), RAINBOWMODE("S"), REMOVECOLOR("B"), COLORLIST("D"), BACKTOCOLORMENU("G"), NEXTDAY("F"),
 	PREVIOUSDAY("H"), ADDDAILYTASK("J"), DAILYTASK("O"), GOTODAY("a"), PRINTAGENDA("b"), YESMEMO("c"), NOMEMO("d"),
-	YESREPEAT("e"), NOREPEAT("f"), REMOVETASK("g"), ACTIVEMEMO("h"), DISABLEMEMO("j"), BACKTOAGENDA("i");
+	YESREPEAT("e"), NOREPEAT("f"), REMOVETASK("g"), ACTIVEMEMO("h"), DISABLEMEMO("j"), BACKTOAGENDA("i"),
+	NEXTMONTH("K"), PREVIOUSMONTH("l"), NODAY("m"), DAYCHOOSEN("n");
 	
 	
 	private String str;

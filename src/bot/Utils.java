@@ -1,5 +1,7 @@
 package bot;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -116,6 +118,20 @@ public class Utils {
 		}
 		
 		return null;
+	}
+	
+	public static int daysOfMonth(LocalDate day) 
+	{
+		  return day.dayOfMonth().getMaximumValue();
+	}
+	
+	
+	public static List<String> list1FromString(String s)
+	{
+		List<String> result = new LinkedList<String>();
+		result.add(s);
+		
+		return result;
 	}
 	
 }
