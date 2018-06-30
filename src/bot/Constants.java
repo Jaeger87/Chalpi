@@ -49,6 +49,7 @@ public class Constants {
 	public static final String BACKUP = "/backup";
 	public static final String RESTORE = "/restore";
 	public static final String REBOOT = "/riavvia";
+	public static final String DEBUG = "/DEBUG";
 	
 	
 	public static final String SENDRESTOREFILE = "Inviami il file di backup";
@@ -77,6 +78,8 @@ public class Constants {
 
 	
 	
+	public static final String NEXTMONTH = "➡️";
+	public static final String PREVIOUSMONTH = "⬅️";
 	public static final String NEXTDAY = "➡️";
 	public static final String PREVIOUSDAY = "⬅️";
 	public static final String NOTASKTODAY = "Non ci sono impegni per oggi 😎😎😎😎";
@@ -94,10 +97,12 @@ public class Constants {
 	public static final String NOMEMO = "No 😡";
 	public static final String YESREPEAT = "Si 🔄";
 	public static final String NOREPEAT = "No";
-	public static final String WHICHDAY = "Scrivimi il giorno nel formato: giorno-mese-anno";
+	public static final String TOUCHDAY = "Tocca il giorno che vuoi selezionare";
 	public static final String EDITSAVED = "Salvato";
 	public static final String ACTIVEMEMO = "Attiva memo ⏰";
 	public static final String DISABLEMEMO = "Disattiva memo 😴";
 	public static final String OPSWEEK = "Non hai inviato un numero, il task è salvato correttamente ma non le ripetizioni.";
 	public static final String OPSDATA = "Il formato è sbagliato, riprova!";
+	public static final String BACKTOTODAY = "Torna ad oggi ⌛️";
+	public static final String NOTVALIDCHOICE = "Scelta non valida";
 }

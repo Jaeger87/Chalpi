@@ -353,11 +353,7 @@ public class ChalpiBot extends Bot{
 			break;
 			
 		case GOTODAY:
-			ustatus.setUp(UserPendingRequest.WHICHDAY);
-			mts = new MessageToSend(c.getMessage().getChat().getId(), Constants.WHICHDAY);
-			mts.setParseMode(ParseMode.MARKDOWN);
-			mts.setReplyMarkup(new ForceReply(true));
-			sendMessage(mts);
+			showEditCalendar(LocalDate.now(),c.getMessage().getChat().getId(), c.getMessage().getMessageID());
 			break;
 			
 		case PRINTAGENDA: 
@@ -409,6 +405,31 @@ public class ChalpiBot extends Bot{
 			break;
 			
 		case BACKTOAGENDA:
+			day = Utils.fromStringToDate(values[1]);
+			showEditAgenda(day,c.getMessage().getChat().getId(), c.getMessage().getMessageID());
+			break;
+		
+		case NEXTMONTH:
+			day = Utils.fromStringToDate(values[1]);
+			day = day.plusMonths(1);
+			showEditCalendar(day,c.getMessage().getChat().getId(), c.getMessage().getMessageID());
+			break;
+			
+		case PREVIOUSMONTH:
+			day = Utils.fromStringToDate(values[1]);
+			day = day.minusMonths(1);
+			showEditCalendar(day,c.getMessage().getChat().getId(), c.getMessage().getMessageID());
+			break;
+			
+		case NODAY:
+			sendAnswerCallBackQuery(c.getId(), Constants.NOTVALIDCHOICE);
+			break;
+			
+		case BACKTOTODAY:
+			showEditAgenda(LocalDate.now(),c.getMessage().getChat().getId(), c.getMessage().getMessageID());
+			break;
+			
+		case DAYCHOOSEN:
 			day = Utils.fromStringToDate(values[1]);
 			showEditAgenda(day,c.getMessage().getChat().getId(), c.getMessage().getMessageID());
 			break;
@@ -571,6 +592,15 @@ public class ChalpiBot extends Bot{
 	public void textMessage(Message m) {
 		if(isNotAuthorized(m.getFrom().getId()))
 			return;
+		
+		if(m.getText().equals(Constants.DEBUG))
+		{
+			MessageToSend mts = new MessageToSend(m.getChat().getId(), "debug");
+			mts.setReplyMarkup(KeyboardUtils.getCalendar(LocalDate.now()));
+			mts.setParseMode(ParseMode.MARKDOWN);
+			sendMessage(mts);
+		}
+		
 		
 		if(m.getText().equals(Constants.REBOOT))
 		{
@@ -849,31 +879,6 @@ public class ChalpiBot extends Bot{
 				return;
 			}
 			
-			if(m.getReplyToMessage().getText().equals(Constants.WHICHDAY))
-			{
-				
-				UserStatus userStatus = pendingRegister.get(m.getFrom().getId());
-				
-				if(!userStatus.getUp().equals(UserPendingRequest.WHICHDAY))
-					return;
-				userStatus.setUp(UserPendingRequest.NONE);
-				
-				LocalDate day = Utils.fromUserStringToDate(m.getText());
-				
-				if(day == null)
-				{
-					userStatus.setUp(UserPendingRequest.NONE);
-					MessageToSend mts = new MessageToSend(m.getChat().getId(), Constants.OPSDATA);
-					mts.setReplyMarkup(menuContainer.getMainMenu());
-					mts.setParseMode(ParseMode.MARKDOWN);
-					sendMessage(mts);
-					return;
-				}
-				
-				showSendAgenda(day, m.getChat().getId());
-				
-			}
-			
 			return;
 			
 		}
@@ -1000,7 +1005,18 @@ public class ChalpiBot extends Bot{
 		
 		return;
 	}
-
+	
+	private void showEditCalendar(LocalDate day, long chatID, int messageID)
+	{	
+		EditMessageTextRequest emt = new EditMessageTextRequest(chatID, messageID,
+				Constants.TOUCHDAY);
+		emt.setParse_mode(ParseMode.MARKDOWN);
+		emt.setReply_markup(KeyboardUtils.getCalendar(day));
+		editMessageText(emt);
+		
+		return;
+	}
+	
 	private void showEditAgenda(LocalDate day, long chatID, int messageID)
 	{
 		List<DailyTask> agenda = oBox.getDailyAgenda(day);

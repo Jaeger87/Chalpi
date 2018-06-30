@@ -3,6 +3,7 @@ package bot;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.joda.time.LocalDate;
@@ -359,10 +360,27 @@ public class KeyboardUtils {
 		return sb.toString();
 	}
 	
+
 	public static InlineKeyboardMarkup getCalendar(LocalDate day)
 	{
 		List<List<InlineKeyboardButton>> keyboard = new ArrayList<List<InlineKeyboardButton>>();
 		
+		String month = day.toString("MMMM yyyy", Locale.ITALY);
+		
+		month = month.substring(0, 1).toUpperCase() + month.substring(1);
+		
+		List<InlineKeyboardButton> firstRow = new ArrayList<>();
+		
+		firstRow.add(createButton(CallBackCodes.PREVIOUSMONTH,
+				Constants.PREVIOUSMONTH, Utils.list1FromString(day.toString())));
+		
+		firstRow.add(createButton(CallBackCodes.NODAY,month, null));
+		
+		firstRow.add(createButton(CallBackCodes.NEXTMONTH,
+				Constants.NEXTMONTH, Utils.list1FromString(day.toString())));
+		
+		
+		keyboard.add(firstRow);
 		
 		int dayOfMonth = Utils.daysOfMonth(day);
 		
@@ -375,7 +393,7 @@ public class KeyboardUtils {
 		for(; rowIndex < indexDay.getDayOfWeek(); rowIndex++)
 			row.add(new Triple<CallBackCodes, String,  List<String>>(CallBackCodes.NODAY, "-", null)); 
 		
-		for(; rowIndex < 7; rowIndex++)
+		for(; rowIndex <= 7; rowIndex++)
 		{
 			row.add(new Triple<CallBackCodes, String, List<String>>(CallBackCodes.DAYCHOOSEN, "" +
 					indexDay.getDayOfMonth(), Utils.list1FromString(indexDay.toString())));
@@ -399,7 +417,7 @@ public class KeyboardUtils {
 		rowIndex = 0;
 		row = new LinkedList<>();
 		
-		while(indexDay.getDayOfMonth() < dayOfMonth)
+		while(indexDay.getDayOfMonth() <= dayOfMonth && indexDay.getDayOfMonth() > 1 && rowIndex < 7)
 		{
 			row.add(new Triple<CallBackCodes, String, List<String>>(CallBackCodes.DAYCHOOSEN, "" +
 					indexDay.getDayOfMonth(), Utils.list1FromString(indexDay.toString())));
@@ -407,10 +425,29 @@ public class KeyboardUtils {
 			rowIndex++;
 		}
 		
+		if(rowIndex == 7)
+		{
+			keyboard.add(buildBottonsLine(row));
+			row = new LinkedList<>();
+			rowIndex = 0;
+			while(indexDay.getDayOfMonth() <= dayOfMonth && indexDay.getDayOfMonth() > 1 && rowIndex < 7)
+			{
+				row.add(new Triple<CallBackCodes, String, List<String>>(CallBackCodes.DAYCHOOSEN, "" +
+						indexDay.getDayOfMonth(), Utils.list1FromString(indexDay.toString())));
+				indexDay = indexDay.plusDays(1);
+				rowIndex++;
+			}
+		}
+		
 		for(; rowIndex < 7; rowIndex++)
 			row.add(new Triple<CallBackCodes, String,  List<String>>(CallBackCodes.NODAY, "-", null)); 
 		
 		keyboard.add(buildBottonsLine(row));
+		
+		InlineKeyboardButton todayButton = createButton(CallBackCodes.BACKTOTODAY, Constants.BACKTOTODAY, null);
+		List<InlineKeyboardButton> lastRow = new ArrayList<>();
+		lastRow.add(todayButton);
+		keyboard.add(lastRow);
 		
 		return new InlineKeyboardMarkup(keyboard);
 		

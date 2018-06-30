@@ -10,7 +10,6 @@ public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 	private DateTime schedule;
 	private int id;
 	private boolean enable;
-	private boolean notice;
 	
 	
 	public DailyTask(String task, DateTime schedule, int id, boolean notice) 
@@ -18,8 +17,7 @@ public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 		this.task = task;
 		this.schedule = schedule;
 		this.id = id;
-		this.enable = true;
-		this.notice = notice;
+		this.enable = notice;
 	}
 	
 	public String getTask() 
@@ -89,11 +87,6 @@ public class DailyTask implements Comparable<DailyTask>, ListableOboxItems{
 			alarm = " ⏰";
 		
 		return "\\[" + Utils.fromTimeToString(schedule.toLocalTime()) + "] " + task + alarm; 
-	}
-
-	public boolean isNotice()
-	{
-		return notice;
 	}
 
 
