@@ -301,6 +301,14 @@ public class ChalpiBot extends Bot{
 			sendMessage(mts);
 			break;
 		
+		case HOURSTOUCH:
+			
+			break;
+			
+		case MINUTESTOUCH:
+			
+			break;
+			
 		case YESMEMO:
 			oBox.addTask(ustatus.getPendingTaskString(), ustatus.getPendingLocalDateTime().toDateTime(), true);
 			emt = new EditMessageTextRequest(c.getMessage().getChat().getId(), c.getMessage().getMessageID(),
@@ -596,7 +604,7 @@ public class ChalpiBot extends Bot{
 		if(m.getText().equals(Constants.DEBUG))
 		{
 			MessageToSend mts = new MessageToSend(m.getChat().getId(), "debug");
-			mts.setReplyMarkup(KeyboardUtils.getCalendar(LocalDate.now()));
+			mts.setReplyMarkup(KeyboardUtils.getMinuteKeyboard());
 			mts.setParseMode(ParseMode.MARKDOWN);
 			sendMessage(mts);
 		}

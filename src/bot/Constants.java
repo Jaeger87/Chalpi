@@ -105,4 +105,7 @@ public class Constants {
 	public static final String OPSDATA = "Il formato è sbagliato, riprova!";
 	public static final String BACKTOTODAY = "Torna ad oggi ⌛️";
 	public static final String NOTVALIDCHOICE = "Scelta non valida";
+	public static final String WHATTASK = "Scrivimi il tuo impegno.";
+	public static final String TOUCHHOUR = "Verso che ora?";
+	public static final String TOUCHMINUTES = "E in quali minuti?";
 }

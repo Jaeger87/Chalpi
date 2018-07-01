@@ -21,7 +21,8 @@ public class KeyboardUtils {
 	
 	private static InlineKeyboardMarkup yesNoMemoKeyboardStatic;
 	private static InlineKeyboardMarkup yesNoRepeatKeyboardStatic;
-	
+	private static InlineKeyboardMarkup hoursKeyboard;
+	private static InlineKeyboardMarkup minutesKeyboard;
 	
 	public static InlineKeyboardMarkup ItemListKeyboardFactory(ItemList itli)
 	{
@@ -283,6 +284,18 @@ public class KeyboardUtils {
 	}
 	
 	
+	private static InlineKeyboardButton createButtonOneArg(CallBackCodes callback, String text, String arg)
+	{
+		InlineKeyboardButton button = new InlineKeyboardButton(text);
+		String callBackData = "" + callback;
+		
+		if(arg != null)
+			callBackData += Constants.CALLBACKSEPARATOR + arg;
+		button.setCallback_data(callBackData);
+		
+		return button;
+	}
+	
 	public static String textListFactory(List<ItemList> all)
 	{
 		if (all.isEmpty())
@@ -461,6 +474,53 @@ public class KeyboardUtils {
 		for(Triple<CallBackCodes, String, List<String>> t : triples)
 			line.add(createButton(t.getLeft(), t.getCenter(), t.getRight()));
 		return line;
+	}
+	
+	
+	public static InlineKeyboardMarkup getHoursKeyboard()
+	{
+		if(hoursKeyboard != null)
+			return hoursKeyboard;
+		
+		List<List<InlineKeyboardButton>> keyboard = new ArrayList<List<InlineKeyboardButton>>();
+
+		for(int rowIndex = 0; rowIndex < 4; rowIndex++)
+		{
+			List<InlineKeyboardButton> line = new ArrayList<>();
+			for(int hourIndex = 6 * rowIndex; hourIndex < 6 * (rowIndex+1); hourIndex++)
+			{
+				InlineKeyboardButton button = createButtonOneArg(CallBackCodes.HOURSTOUCH, "" + hourIndex, "" + hourIndex);
+				line.add(button);
+			}
+			keyboard.add(line);
+			
+		}
+		
+		hoursKeyboard = new InlineKeyboardMarkup(keyboard);
+		return hoursKeyboard;
+	}
+	
+	public static InlineKeyboardMarkup getMinuteKeyboard()
+	{
+		if(minutesKeyboard != null)
+			return minutesKeyboard;
+		
+		List<List<InlineKeyboardButton>> keyboard = new ArrayList<List<InlineKeyboardButton>>();
+
+		for(int rowIndex = 0; rowIndex < 4; rowIndex++)
+		{
+			List<InlineKeyboardButton> line = new ArrayList<>();
+			for(int minuteIndex = 15 * rowIndex; minuteIndex < 15 * (rowIndex+1); minuteIndex+=5)
+			{
+				InlineKeyboardButton button = createButtonOneArg(CallBackCodes.MINUTESTOUCH, "" + minuteIndex, "" + minuteIndex);
+				line.add(button);
+			}
+			keyboard.add(line);
+			
+		}
+		
+		minutesKeyboard = new InlineKeyboardMarkup(keyboard);
+		return minutesKeyboard;
 	}
 	
 }
