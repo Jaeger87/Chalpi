@@ -296,16 +296,44 @@ public class ChalpiBot extends Bot{
 			ustatus.setUp(UserPendingRequest.ADDTASK);
 		    day = Utils.fromStringToDate(values[1]);
 			ustatus.setLastLocalDate(day);
-			mts = new MessageToSend(c.getMessage().getChat().getId(), Constants.WHATWHENTASK);
+			mts = new MessageToSend(c.getMessage().getChat().getId(), Constants.WHATTASK);
 			mts.setReplyMarkup(new ForceReply(true));
 			sendMessage(mts);
 			break;
 		
 		case HOURSTOUCH:
+			if(ustatus.getUp() != UserPendingRequest.HOURTASK)
+				return;//maybe error message
+			
+			ustatus.setUp(UserPendingRequest.MINUTETASK);
+			
+			ustatus.setHour(Integer.parseInt(values[1]));
+			
+			emt = new EditMessageTextRequest(c.getMessage().getChat().getId(), c.getMessage().getMessageID(),
+					Constants.TOUCHMINUTES);
+			emt.setParse_mode(ParseMode.MARKDOWN);
+			emt.setReply_markup(KeyboardUtils.getMinuteKeyboard());
+			editMessageText(emt);
 			
 			break;
 			
 		case MINUTESTOUCH:
+			if(ustatus.getUp() != UserPendingRequest.MINUTETASK)
+				return;//maybe error message
+			
+			ustatus.setUp(UserPendingRequest.MEMO);
+			
+			day = ustatus.getLastLocalDate();
+			
+			LocalTime lt = Utils.fromStringToTime("" + ustatus.getHour() + ":" + Integer.parseInt(values[1]));
+			
+			ustatus.setPendingLocalDateTime(day.toLocalDateTime(lt));
+			
+			emt = new EditMessageTextRequest(c.getMessage().getChat().getId(), c.getMessage().getMessageID(),
+					Constants.WANNANOTICETASK);
+			emt.setParse_mode(ParseMode.MARKDOWN);
+			emt.setReply_markup(KeyboardUtils.yesNoMemoKeyboard());
+			editMessageText(emt);
 			
 			break;
 			
@@ -603,10 +631,7 @@ public class ChalpiBot extends Bot{
 		
 		if(m.getText().equals(Constants.DEBUG))
 		{
-			MessageToSend mts = new MessageToSend(m.getChat().getId(), "debug");
-			mts.setReplyMarkup(KeyboardUtils.getMinuteKeyboard());
-			mts.setParseMode(ParseMode.MARKDOWN);
-			sendMessage(mts);
+
 		}
 		
 		
@@ -682,6 +707,7 @@ public class ChalpiBot extends Bot{
 		if(m.getText().equals(Constants.AGENDA))
 		{
 			showSendAgenda(new LocalDate(), m.getChat().getId());
+			
 			return;
 		}
 		
@@ -805,40 +831,19 @@ public class ChalpiBot extends Bot{
 				return;
 			}
 			
-			if(m.getReplyToMessage().getText().equals(Constants.WHATWHENTASK))
+			if(m.getReplyToMessage().getText().equals(Constants.WHATTASK))
 			{
 				
 				UserStatus userStatus = pendingRegister.get(m.getFrom().getId());
 				
 				if(!userStatus.getUp().equals(UserPendingRequest.ADDTASK))
 					return;
-				userStatus.setUp(UserPendingRequest.NONE);
+				userStatus.setUp(UserPendingRequest.HOURTASK);
 				
+				userStatus.setPendingTaskString(m.getText());
 				
-				
-				String[] values = m.getText().split("/");
-				
-				if(values == null || values.length != 2)
-				{
-					sendOPSMessage(userStatus, m.getChat().getId());
-					return;
-				}
-				
-				LocalTime lt = Utils.fromStringToTime(values[1]);
-				
-				if(lt == null)
-				{
-					sendOPSMessage(userStatus, m.getChat().getId());
-					return;
-				}
-				
-				LocalDate day = pendingRegister.get(m.getFrom().getId()).getLastLocalDate();
-				
-				userStatus.setPendingLocalDateTime(day.toLocalDateTime(lt));
-				userStatus.setPendingTaskString(values[0]);
-				
-				MessageToSend mts = new MessageToSend(m.getChat().getId(), Constants.WANNANOTICETASK);
-				mts.setReplyMarkup(KeyboardUtils.yesNoMemoKeyboard());
+				MessageToSend mts = new MessageToSend(m.getChat().getId(), Constants.TOUCHHOUR);
+				mts.setReplyMarkup(KeyboardUtils.getHoursKeyboard());
 				mts.setParseMode(ParseMode.MARKDOWN);			
 				sendMessage(mts);
 				
@@ -1005,7 +1010,6 @@ public class ChalpiBot extends Bot{
 	{
 		List<DailyTask> agenda = oBox.getDailyAgenda(day);
 		String textMessage = agendaString(agenda, day);
-		
 		MessageToSend mts = new MessageToSend(chatID, textMessage);
 		mts.setReplyMarkup(KeyboardUtils.dailyAgendaKeyboardFactory(agenda, day));
 		mts.setParseMode(ParseMode.MARKDOWN);
@@ -1044,10 +1048,11 @@ public class ChalpiBot extends Bot{
 	private String agendaString(List<DailyTask> agenda, LocalDate day)
 	{
 		String textMessage = "***Agenda del: " + Utils.localDateToString(day) + "***\n\n";
-		if(agenda == null)
+		if(agenda == null || agenda.size() == 0)
 			textMessage += Constants.NOTASKTODAY;
 		else
 			textMessage += Utils.dailyAgendaString(agenda);
+		
 		return textMessage;
 	}
 	
@@ -1089,7 +1094,7 @@ public class ChalpiBot extends Bot{
 		
 	}
 	
-	
+	/*
 	private void sendOPSMessage(UserStatus userStatus, long chatID)
 	{
 		userStatus.setUp(UserPendingRequest.NONE);
@@ -1099,6 +1104,6 @@ public class ChalpiBot extends Bot{
 		sendMessage(mts);
 		return;
 	}
-	
+	*/
 	
 }

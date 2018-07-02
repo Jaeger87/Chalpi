@@ -12,6 +12,7 @@ public class UserStatus {
 	private String pendingTaskString;
 	private LocalDateTime pendingLocalDateTime;
 	private boolean pendingMemo = false;
+	private int hour;
 	
 	private UserPendingRequest up = UserPendingRequest.NONE;
 	
@@ -94,6 +95,17 @@ public class UserStatus {
 	{
 		this.pendingMemo = pendingMemo;
 	}
+
+	public int getHour() 
+	{
+		return hour;
+	}
+
+	public void setHour(int hour) 
+	{
+		this.hour = hour;
+	}
+
 	
 	
 	

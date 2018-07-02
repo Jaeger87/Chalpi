@@ -89,7 +89,6 @@ public class Constants {
 	public static final String BACKTOAGENDA = "Indietro 🔙";
 	public static final String PRINTAGENDA = "Stampa 🖨";
 	public static final String OPSTASK = "Sembra che qualcosa sia andato storto nel come hai scritto l'impegno, riprova!";
-	public static final String WHATWHENTASK = "Scrivimi che impegno hai e l'orario nel formato: impegno/ore:minuti";
 	public static final String WANNANOTICETASK = "Vuoi un messaggio di avviso 5 minuti prima?";
 	public static final String REPEATETASK = "Vuoi ripetere questo impegno per altre settimane?";
 	public static final String HOWMANYWEEKS = "Per quante settimane?";
