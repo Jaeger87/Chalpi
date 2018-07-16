@@ -123,8 +123,9 @@ def loop(settings, current_color, strip, abs_file_path):
 		input_state = not(GPIO.input(touchPinGPIO))
 		second_button_state = GPIO.input(buttonPinGPIO)
 		if second_button_state:
-			current_color = Color(127,127,127)
+			current_color = Color(75,69,20)
 			change_light = True
+			rainbowMode = False
 		if commands_from_bot:
 			cc =  settings['currentColor']
 			rainbowMode = settings['rainbow']
