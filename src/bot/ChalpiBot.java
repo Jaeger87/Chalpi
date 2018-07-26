@@ -59,8 +59,7 @@ public class ChalpiBot extends Bot{
 	private String ipAddress = "";
 	private MessageReceiver myOwnmr;
 	public static final Gson gson = Converters
-			.registerLocalDate(Converters.
-					registerDateTime(new GsonBuilder().enableComplexMapKeySerialization())).create();
+			.registerAll(new GsonBuilder().enableComplexMapKeySerialization()).create();
 	
 	
 	public ChalpiBot(String token) throws FileNotFoundException, UnknownHostException, SocketException {
@@ -74,6 +73,7 @@ public class ChalpiBot extends Bot{
 		
 		menuContainer = new MenuContainer();
 		
+		//DateMidnight date = new DateMidnight();
 		
 		//creating the Set for the auth users
 		boolean masterFound = false;
